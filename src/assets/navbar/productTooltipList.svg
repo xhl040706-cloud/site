@@ -1,0 +1,38 @@
+<svg width="620" height="430" viewBox="0 0 620 430" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="620" height="430" rx="2" fill="#121416" fill-opacity="0.98"/>
+  <rect x="0.5" y="0.5" width="619" height="429" rx="1.5" stroke="#3B3F46"/>
+
+  <defs>
+    <radialGradient id="iconGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(67 77) rotate(90) scale(42)">
+      <stop stop-color="#3D72FF" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#111318" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <g id="item-costrict-cloud">
+    <rect x="28" y="38" width="78" height="78" rx="7" fill="#16181C" stroke="#555A63" stroke-opacity="0.7" stroke-width="1.2"/>
+    <circle cx="67" cy="77" r="27" fill="url(#iconGlow)"/>
+    <rect x="51" y="63" width="32" height="22" rx="2" stroke="#76A3FF" stroke-width="3"/>
+    <path d="M67 87V94M58 96H76" stroke="#76A3FF" stroke-width="3" stroke-linecap="round"/>
+    <text x="135" y="72" fill="#F5F7FA" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700">Costrict Cloud</text>
+    <text x="135" y="117" fill="#969CA8" font-family="Inter, Arial, sans-serif" font-size="24">在线编码平台。</text>
+    <rect x="330" y="36" width="61" height="39" rx="4" fill="#064937"/>
+    <text x="338" y="64" fill="#21F0A5" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="500">New</text>
+  </g>
+
+  <g id="item-costrict-ide">
+    <rect x="28" y="168" width="78" height="78" rx="7" fill="#16181C" stroke="#555A63" stroke-opacity="0.7" stroke-width="1.2"/>
+    <circle cx="67" cy="207" r="27" fill="url(#iconGlow)"/>
+    <path d="M66 188H78C78 194 86 194 86 188H99V201C93 201 93 209 99 209V224H84C84 218 76 218 76 224H59V211C65 211 65 203 59 203V188H66Z" stroke="#F5F7FA" stroke-width="3" stroke-linejoin="round"/>
+    <text x="135" y="202" fill="#F5F7FA" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700">CoStrict IDE</text>
+    <text x="135" y="247" fill="#969CA8" font-family="Inter, Arial, sans-serif" font-size="24">支持VS code、Jetbrains</text>
+  </g>
+
+  <g id="item-costrict-cli">
+    <rect x="28" y="298" width="78" height="78" rx="7" fill="#16181C" stroke="#555A63" stroke-opacity="0.7" stroke-width="1.2"/>
+    <circle cx="67" cy="337" r="27" fill="url(#iconGlow)"/>
+    <path d="M61 326L52 337L61 348M78 324L70 350M83 326L92 337L83 348" stroke="#F5F7FA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="135" y="332" fill="#F5F7FA" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700">CoStrict CLI</text>
+    <text x="135" y="377" fill="#969CA8" font-family="Inter, Arial, sans-serif" font-size="24">终端命令协作。</text>
+  </g>
+</svg>
