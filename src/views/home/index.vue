@@ -12,7 +12,7 @@
     <FooterCopyright />
     <!-- 问卷入口已屏蔽
     <SurveyGiftEntry
-      class="fixed right-[30px] top-[18vh] z-[1000] max-md:right-4 max-md:top-20"
+      class="fixed right-[30px] top-[18vh] z-[1000] max-md:right-4 max-md:top-[124px]"
     />
     -->
     <StructuredData

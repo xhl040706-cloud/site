@@ -29,10 +29,12 @@ describe('August Developer Month page integration', () => {
     const wrapper = shallowMount(HomeIndex, { global: { plugins: [i18n] } })
     const banner = wrapper.findComponent(AugustDeveloperMonthBanner)
     const hero = wrapper.findComponent({ name: 'SloganSection' })
+    const surveyGift = wrapper.findComponent({ name: 'SurveyGiftEntry' })
 
     expect(banner.exists()).toBe(true)
     expect(hero.exists()).toBe(true)
     expect(wrapper.html().indexOf(banner.html())).toBeLessThan(wrapper.html().indexOf(hero.html()))
+    expect(surveyGift.classes()).toContain('max-md:top-[124px]')
   })
 
   it('renders the August details before existing active activities', () => {
