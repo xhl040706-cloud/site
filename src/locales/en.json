@@ -306,6 +306,41 @@
     "copyFailed": "Copy failed, please copy manually"
   },
   "operation": {
+    "august": {
+      "period": "August 2026",
+      "title": "CoStrict August Developer Month",
+      "summary": "Three upgrades across user benefits, model capabilities, and product experience.",
+      "rights": {
+        "date": "Available August 1",
+        "title": "User benefits upgrade",
+        "summary": "A thank-you to our early supporters, with upgraded Credits benefits.",
+        "items": [
+          "Purchased and unused Credits will automatically remain valid for 12 months.",
+          "Users receive 20% bonus Credits based on their historical purchase amount."
+        ]
+      },
+      "models": {
+        "date": "Available August 5",
+        "title": "Model ecosystem upgrade",
+        "summary": "Now adding Kimi K3, MiniMax M3, step-3.7-flash, and mimo-v2.5-pro.",
+        "items": [
+          "Daily coding: choose faster models to improve development efficiency.",
+          "Complex code analysis: choose stronger reasoning models for demanding engineering tasks.",
+          "Enterprise development: choose stable, secure, and controllable models.",
+          "Image-to-code: choose a model that supports image input."
+        ]
+      },
+      "product": {
+        "date": "Available August 14",
+        "title": "Product capabilities upgrade",
+        "summary": "Moving from an AI coding tool toward an enterprise engineering transformation partner.",
+        "items": [
+          "Enterprise development: add CoStrict Cloud, complete the AI Native workflow, and strengthen security.",
+          "Organizational evolution: build an enterprise knowledge base, skill marketplace, and multi-level AI Coding dashboards.",
+          "Human-agent collaboration: embed AI Agents into CI/CD to delegate repetitive work."
+        ]
+      }
+    },
     "heroTag": "Hot Activities",
     "heroTitle": "Join Activities, Get Free Credits",
     "heroSubtitle": "Accelerate your AI coding experience, every participation makes CoStrict better",

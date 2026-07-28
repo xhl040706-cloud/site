@@ -307,6 +307,41 @@
     "copyFailed": "复制失败，请手动复制"
   },
   "operation": {
+    "august": {
+      "period": "2026年8月",
+      "title": "CoStrict 8月开发者福利月",
+      "summary": "围绕用户权益、模型能力和产品体验带来三大升级。",
+      "rights": {
+        "date": "8月1日起",
+        "title": "用户权益升级",
+        "summary": "感谢早鸟用户支持，Credits权益全面升级。",
+        "items": [
+          "已购买且未消耗的Credits，有效期自动升级至12个月。",
+          "根据历史购买额度，额外赠送20% Credits。"
+        ]
+      },
+      "models": {
+        "date": "8月5日起",
+        "title": "模型生态升级",
+        "summary": "新接入Kimi K3、MiniMax M3、step-3.7-flash、mimo-v2.5-pro。",
+        "items": [
+          "日常编码：选择响应更快的模型，提升开发效率。",
+          "复杂代码分析：选择推理能力更强的模型，解决复杂研发问题。",
+          "企业级开发：选择更加稳定、安全可控的模型。",
+          "图片转代码：选择支持图片输入的大模型。"
+        ]
+      },
+      "product": {
+        "date": "8月14日起",
+        "title": "产品能力升级",
+        "summary": "从AI编程工具走向企业研发转型伙伴。",
+        "items": [
+          "企业级开发：新增CoStrict Cloud，完善AI Native全流程闭环并升级安全能力。",
+          "组织持续进化：建设企业知识库、技能市场和多层级AI Coding数据看板。",
+          "人机协作：将AI Agent嵌入CI/CD，自动委派重复性工作。"
+        ]
+      }
+    },
     "heroTag": "热门活动",
     "heroTitle": "参与活动，免费领取 Credits",
     "heroSubtitle": "加速你的 AI 编程体验，每一次参与都让 CoStrict 变得更好",
