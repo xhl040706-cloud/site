@@ -23,6 +23,10 @@
     "new": "New"
   },
   "home": {
+    "augustBanner": {
+      "text": "CoStrict 8月开发者福利月｜三大升级陆续上线",
+      "ariaLabel": "查看 CoStrict 8月开发者福利月详情"
+    },
     "slogan": {
       "title": "CoStrict",
       "subTitle": "企业严肃开发的AI编程平台",

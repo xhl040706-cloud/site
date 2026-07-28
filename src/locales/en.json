@@ -23,6 +23,10 @@
     "new": "New"
   },
   "home": {
+    "augustBanner": {
+      "text": "CoStrict August Developer Month {'|'} Three major upgrades are rolling out",
+      "ariaLabel": "View CoStrict August Developer Month details"
+    },
     "slogan": {
       "title": "CoStrict",
       "subTitle": "An AI Coding Platform for Serious Development",
