@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useHead } from '@unhead/vue'
 import { NDataTable } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
+import AugustDeveloperMonthSection from './components/AugustDeveloperMonthSection.vue'
 import { useScrollAnimation } from './hooks/useScrollAnimation'
 import CcfLogo from '@/assets/home/ccf_logo.webp'
 import {
@@ -107,8 +108,14 @@ const [card1Ref, card2Ref, card3Ref, card4Ref, history1Ref] = useScrollAnimation
     >
       <img :src="CcfLogo" alt="CCF 大赛" class="w-[120px] md:w-[198px] h-auto pointer-events-none select-none" />
     </router-link>
+
+    <AugustDeveloperMonthSection />
+
     <!-- Active Activities -->
-    <section class="max-w-[960px] mx-auto px-6 py-12 flex flex-col gap-4">
+    <section
+      data-section="active-activities"
+      class="max-w-[960px] mx-auto px-6 py-12 flex flex-col gap-4"
+    >
 
       <!-- Card 1: 注册有礼 -->
       <div class="scroll-animation-wrapper card-base" ref="card1Ref">
