@@ -21,16 +21,34 @@ const mountSection = (locale: 'zh' | 'en') => {
 describe('AugustDeveloperMonthSection', () => {
   it('renders the complete Chinese campaign content under a stable anchor', () => {
     const wrapper = mountSection('zh')
+    const content = wrapper.text()
 
     expect(wrapper.attributes('id')).toBe('august-2026')
-    expect(wrapper.text()).toContain('CoStrict 8月开发者福利月')
-    expect(wrapper.text()).toContain('有效期自动升级至12个月')
-    expect(wrapper.text()).toContain('额外赠送20% Credits')
-    expect(wrapper.text()).toContain('Kimi K3')
-    expect(wrapper.text()).toContain('mimo-v2.5-pro')
-    expect(wrapper.text()).toContain('CoStrict Cloud')
-    expect(wrapper.text()).toContain('AI Native')
-    expect(wrapper.text()).toContain('CI/CD')
+    for (const expectedText of [
+      'CoStrict 8月开发者福利月',
+      '8月1日',
+      '8月5日',
+      '8月14日',
+      '有效期自动升级至12个月',
+      '额外赠送20% Credits',
+      'Kimi K3',
+      'MiniMax M3',
+      'step-3.7-flash',
+      'mimo-v2.5-pro',
+      '日常编码',
+      '复杂代码分析',
+      '企业级开发',
+      '图片转代码',
+      'CoStrict Cloud',
+      'AI Native',
+      '安全能力',
+      '企业知识库',
+      '技能市场',
+      '多层级AI Coding数据看板',
+      'CI/CD',
+    ]) {
+      expect(content).toContain(expectedText)
+    }
   })
 
   it('renders English content without missing translation keys', () => {
