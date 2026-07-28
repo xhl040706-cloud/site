@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import i18n from '@/locales'
 import { createPrefetchableRoute, prefetchRoutes } from './prefetch'
+import { scrollBehavior } from './scrollBehavior'
 
 // 创建可预取的路由加载器
 const homeRoute = createPrefetchableRoute(() => import('@/views/home/index.vue'))
@@ -85,9 +86,7 @@ export const routes = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
-  scrollBehavior() {
-    return { top: 0 }
-  },
+  scrollBehavior,
 })
 
 // 导航守卫：检查路由的语言可见性
