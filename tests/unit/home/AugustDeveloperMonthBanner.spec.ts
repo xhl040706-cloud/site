@@ -22,23 +22,25 @@ const mountBanner = (locale: 'zh' | 'en') => {
 }
 
 describe('AugustDeveloperMonthBanner', () => {
-  it('renders one minimal Chinese activity message and the details route', () => {
+  it('always renders the final Chinese message and stage-free details route', () => {
     const wrapper = mountBanner('zh')
     const link = wrapper.findComponent(RouterLinkStub)
 
-    expect(wrapper.text()).toContain('CoStrict 8月开发者福利月｜三大升级陆续上线')
-    expect(link.props('to')).toBe('/operation#august-2026')
+    expect(wrapper.text()).toContain('CoStrict 8月开发者福利月｜三大升级现已全部上线')
+    expect(link.props('to')).toBe('/operation/august-developer-month')
+    expect(link.attributes('target')).toBe('_blank')
+    expect(link.attributes('rel')).toBe('noopener noreferrer')
     expect(link.attributes('aria-label')).toBe('查看 CoStrict 8月开发者福利月详情')
     expect(wrapper.text()).not.toContain('20%')
     expect(wrapper.text()).not.toContain('Kimi')
     expect(wrapper.text()).not.toContain('8月1日')
   })
 
-  it('renders the English activity message', () => {
+  it('always renders the final English message', () => {
     const wrapper = mountBanner('en')
 
     expect(wrapper.text()).toContain(
-      'CoStrict August Developer Month | Three major upgrades are rolling out',
+      'CoStrict August Developer Month | All three upgrades are now live',
     )
   })
 })

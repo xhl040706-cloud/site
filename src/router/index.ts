@@ -9,6 +9,9 @@ const cloudRoute = createPrefetchableRoute(() => import('@/views/cloud/index.vue
 const downloadRoute = createPrefetchableRoute(() => import('@/views/download/index.vue'))
 const pricingRoute = createPrefetchableRoute(() => import('@/views/pricing/PricingPage.vue'))
 const operationRoute = createPrefetchableRoute(() => import('@/views/operation/OperationPage.vue'))
+const augustDeveloperMonthRoute = createPrefetchableRoute(
+  () => import('@/views/operation/AugustDeveloperMonthPage.vue'),
+)
 const ccfCompetitionRoute = createPrefetchableRoute(
   () => import('@/views/operation/CcfCompetition.vue'),
 )
@@ -51,6 +54,14 @@ export const routes = [
     path: '/operation',
     name: 'operation',
     component: operationRoute.load,
+  },
+  {
+    path: '/operation/august-developer-month',
+    name: 'augustDeveloperMonth',
+    component: augustDeveloperMonthRoute.load,
+    meta: {
+      hideNavbar: true,
+    },
   },
   {
     path: '/operation/ccf-competition',
@@ -109,6 +120,7 @@ if (typeof window !== 'undefined') {
       cloudRoute.prefetch,
       downloadRoute.prefetch,
       operationRoute.prefetch,
+      augustDeveloperMonthRoute.prefetch,
       // 仅在中文环境预加载价格页面、博客页面和CCF大赛页面
       ...(currentLocale === 'zh'
         ? [

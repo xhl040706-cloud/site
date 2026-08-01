@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import { AUGUST_DEVELOPER_MONTH_PATH } from '@/views/operation/constants'
 
 defineOptions({ name: 'AugustDeveloperMonthBanner' })
 
@@ -8,12 +9,14 @@ const { t } = useI18n()
 
 <template>
   <RouterLink
-    to="/operation#august-2026"
+    :to="AUGUST_DEVELOPER_MONTH_PATH"
+    target="_blank"
+    rel="noopener noreferrer"
     class="august-banner"
     :aria-label="t('home.augustBanner.ariaLabel')"
   >
     <span class="august-banner__content">
-      <span>{{ t('home.augustBanner.text') }}</span>
+      <span>{{ t('home.augustBanner.stage3Text') }}</span>
       <span class="august-banner__arrow" aria-hidden="true">→</span>
     </span>
   </RouterLink>
