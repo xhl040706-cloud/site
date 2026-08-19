@@ -5,7 +5,7 @@
       class="product-trigger"
       :class="{ 'is-open': isOpen, 'is-active': isProductActive }"
       :aria-expanded="isOpen"
-      @click="toggle"
+      @click="handleOpen"
     >
       <span class="trigger-text">{{ t('menu.product') }}</span>
       <svg class="trigger-arrow" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
@@ -33,7 +33,7 @@
         >
           <span class="icon-box">
             <span class="icon-glow" aria-hidden="true"></span>
-            <!-- 显示器：Costrict Cloud -->
+            <!-- 显示器：CoStrict Cloud -->
             <svg
               v-if="item.iconKey === 'cloud'"
               class="product-icon"
@@ -111,11 +111,12 @@ let closeTimer: ReturnType<typeof setTimeout> | undefined
 
 const items = computed<ProductItem[]>(() => [
   {
-    key: 'ide',
-    iconKey: 'ide',
-    title: t('productMenu.ideTitle'),
-    desc: t('productMenu.ideDesc'),
-    route: { name: 'download', query: { product: 'ide', tab: 'vscode' } },
+    key: 'cloud',
+    iconKey: 'cloud',
+    title: t('productMenu.cloudTitle'),
+    desc: t('productMenu.cloudDesc'),
+    badge: t('productMenu.new'),
+    route: { name: 'cloud' },
   },
   {
     key: 'cli',
@@ -125,12 +126,11 @@ const items = computed<ProductItem[]>(() => [
     route: { name: 'download', query: { product: 'cli', tab: 'cli' } },
   },
   {
-    key: 'cloud',
-    iconKey: 'cloud',
-    title: t('productMenu.cloudTitle'),
-    desc: t('productMenu.cloudDesc'),
-    badge: t('productMenu.new'),
-    route: { name: 'cloud' },
+    key: 'ide',
+    iconKey: 'ide',
+    title: t('productMenu.ideTitle'),
+    desc: t('productMenu.ideDesc'),
+    route: { name: 'download', query: { product: 'ide', tab: 'vscode' } },
   },
 ])
 
@@ -151,10 +151,6 @@ const handleClose = () => {
   closeTimer = setTimeout(() => {
     isOpen.value = false
   }, 140)
-}
-
-const toggle = () => {
-  isOpen.value = !isOpen.value
 }
 
 const onSelect = (item: ProductItem, event: MouseEvent) => {

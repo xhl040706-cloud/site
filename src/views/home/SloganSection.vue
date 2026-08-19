@@ -1,395 +1,597 @@
 <template>
-  <div class="slogan-section w-full relative z-50">
-    <div class="hero-copy w-full flex flex-col items-center">
-        <div
-          class="text-xl sm:text-2xl"
-          :class="[
-            'oss-btn',
-            `oss-btn-${locale}`,
-            'flex',
-            'items-center',
-            'justify-center',
-            'text-white',
-            'h-10',
-            'w-36',
-            ossButtonWidth,
-          ]"
-        >
-          {{ t('home.slogan.ossButton') }}
-        </div>
-        <div class="flex items-center mt-5 sm:mt-8">
-          <div
-            class="text-xl xl:text-5xl lg:text-4xl md:text-3xl sm:text-2xl"
-            :class="['text-white', isEn ? '' : 'slogan-title']"
-          >
-            {{ t('home.slogan.title') }}
-          </div>
-        </div>
-      <div class="flex flex-col items-center">
-      <div
-        class="text-xl lg:text-6xl md:text-5xl sm:text-4xl"
-        :class="['text-white', isEn ? 'max-w-[90%]' : 'slogan-subTitle']"
-      >
-        {{ t('home.slogan.subTitle') }}
-      </div>
-      <div
-        class="description text-white/80 text-sm sm:text-base md:text-lg mt-3 sm:mt-4 text-center"
-        :class="{ 'description-en': isEn }"
-      >
-        {{ t('home.slogan.description') }}
-      </div>
-      <div
-        class="button-group flex justify-center gap-3 sm:gap-4 mt-5 sm:mt-7.5 text-sm xl:text-2xl lg:text-xl md:text-base sm:text-sm text-white"
-        :class="{ 'button-group-en': isEn }"
-      >
-        <div
-          v-for="(button, index) in buttons"
-          :key="index"
-          class="hero-button flex items-center justify-center cursor-pointer px-5 sm:px-6"
-          :class="button.specificClasses"
-          @mouseenter="scrambleButton(index)"
-          @focus="scrambleButton(index)"
-          @click="button.action"
-        >
-          <span>{{ scrambleLabels[index] || t(button.textKey) }}</span>
-        </div>
-      </div>
-      <button class="enterprise-link" type="button" @click="toDeployment">
-        {{ t('home.slogan.enterpriseButton') }}
-      </button>
+  <section ref="heroSection" class="hero-section" aria-labelledby="home-hero-title">
+    <div class="hero-texture hero-texture-left" aria-hidden="true">
+      <img
+        src="@/assets/home/redesign/hero-texture-left.webp"
+        alt=""
+        decoding="async"
+        fetchpriority="high"
+      />
     </div>
+    <div class="hero-texture hero-texture-right" aria-hidden="true">
+      <img
+        src="@/assets/home/redesign/hero-texture-right.webp"
+        alt=""
+        decoding="async"
+        fetchpriority="high"
+      />
     </div>
-  </div>
+    <div class="hero-quiet-zone" aria-hidden="true"></div>
+    <div ref="rippleLayer" class="hero-ripple-layer" aria-hidden="true"></div>
+
+    <div id="hero-logo-anchor" class="hero-logo-anchor" aria-hidden="true"></div>
+
+    <div class="hero-orb hero-orb-a" aria-hidden="true">
+      <img src="@/assets/home/redesign/hero-orb-a.webp" alt="" />
+    </div>
+    <div class="hero-orb hero-orb-d" aria-hidden="true">
+      <img src="@/assets/home/redesign/hero-orb-d.webp" alt="" />
+    </div>
+
+    <div class="hero-content">
+      <h1 id="home-hero-title">
+        <span class="hero-title-line">{{ t('home.redesign.hero.titleLine1') }}</span>
+        <span class="hero-title-line hero-title-accent">{{
+          t('home.redesign.hero.titleLine2')
+        }}</span>
+      </h1>
+      <p>{{ t('home.redesign.hero.subtitle') }}</p>
+      <div class="hero-actions">
+        <button
+          class="hero-button hero-button-primary"
+          type="button"
+          :aria-label="t('home.redesign.hero.download')"
+          @click="toDownload"
+        >
+          <span class="wave-label" aria-hidden="true">
+            <span
+              v-for="(character, index) in downloadCharacters"
+              :key="`${character}-${index}`"
+              class="wave-character"
+              :style="{ '--wave-index': index }"
+            >
+              <span>{{ character === ' ' ? '\u00a0' : character }}</span>
+              <span>{{ character === ' ' ? '\u00a0' : character }}</span>
+            </span>
+          </span>
+        </button>
+        <button
+          class="hero-button hero-button-secondary"
+          type="button"
+          :aria-label="t('home.redesign.hero.tryOnline')"
+          @click="toCloud"
+        >
+          <span class="wave-label" aria-hidden="true">
+            <span
+              v-for="(character, index) in tryOnlineCharacters"
+              :key="`${character}-${index}`"
+              class="wave-character"
+              :style="{ '--wave-index': index }"
+            >
+              <span>{{ character === ' ' ? '\u00a0' : character }}</span>
+              <span>{{ character === ' ' ? '\u00a0' : character }}</span>
+            </span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </section>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
+import { computed, onBeforeUnmount, onMounted, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-
-const { t, locale } = useI18n()
-const router = useRouter()
-const scrambleLabels = ref<string[]>([])
-const scrambleTimers: number[] = []
-
-const isEn = computed(() => locale.value === 'en')
-
-const ossButtonWidth = computed(() => {
-  return isEn.value ? 'w-[280px]' : 'w-[143px]'
-})
-
-const buttons = computed(() => [
-  {
-    specificClasses: ['cloud-button', `cloud-button-${locale.value}`],
-    textKey: 'home.slogan.personalButton',
-    action: toDownload,
-  },
-])
-
-const syncButtonLabels = () => {
-  scrambleLabels.value = buttons.value.map((button) => t(button.textKey))
-}
-
-const canScramble = () => {
-  return window.matchMedia('(hover: hover) and (pointer: fine)').matches
-    && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-}
-
-const scrambleButton = (index: number) => {
-  if (!canScramble()) return
-
-  const button = buttons.value[index]
-  if (!button) return
-
-  const original = t(button.textKey)
-  const glyphs = 'AI<>/{}[]01+-'
-  const steps = 12
-  let frame = 0
-
-  window.clearInterval(scrambleTimers[index])
-  scrambleLabels.value[index] = original
-
-  scrambleTimers[index] = window.setInterval(() => {
-    frame += 1
-    const progress = frame / steps
-    const activeIndex = Math.min(original.length - 1, Math.floor(progress * original.length))
-    const settled = Math.max(0, activeIndex)
-
-    scrambleLabels.value[index] = original.split('').map((char, charIndex) => {
-      if (char.trim() === '') return char
-      if (charIndex < settled) return char
-      if (charIndex === activeIndex) return glyphs[Math.floor(Math.random() * glyphs.length)]
-      return ' '
-    }).join('')
-
-    if (frame >= steps) {
-      window.clearInterval(scrambleTimers[index])
-      scrambleLabels.value[index] = original
-    }
-  }, 48)
-}
-
-const toDownload = () => {
-  router.push('/download')
-}
-
-const toDeployment = () => {
-  window.open('https://docs.costrict.ai/deployment/introduction/')
-}
+import { usePointerSurface } from '@/hooks/usePointerSurface'
 
 defineOptions({
   name: 'SloganSection',
 })
 
-watch(locale, syncButtonLabels, { immediate: true })
+const { t } = useI18n()
+const router = useRouter()
+const heroSection = useTemplateRef<HTMLElement>('heroSection')
+const downloadCharacters = computed(() => Array.from(t('home.redesign.hero.download')))
+const tryOnlineCharacters = computed(() => Array.from(t('home.redesign.hero.tryOnline')))
+let scrollFrame = 0
+
+usePointerSurface(heroSection, { lerp: 0.07 })
+
+const toDownload = () => {
+  router.push({ name: 'download' })
+}
+
+const toCloud = () => {
+  router.push({ name: 'cloud' })
+}
+
+const updateHeroScroll = () => {
+  const element = heroSection.value
+  if (!element) return
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const progress = reducedMotion ? 0 : Math.min(1, Math.max(0, window.scrollY / 380))
+  element.style.setProperty('--hero-content-scroll-y', `${progress * -18}px`)
+  element.style.setProperty('--hero-content-opacity', `${1 - progress * 0.28}`)
+}
+
+const handleScroll = () => {
+  if (scrollFrame) return
+  scrollFrame = window.requestAnimationFrame(() => {
+    scrollFrame = 0
+    updateHeroScroll()
+  })
+}
+
+const rippleLayer = useTemplateRef<HTMLElement>('rippleLayer')
+const RIPPLE_LERP = 0.12
+let rippleFrame = 0
+let rippleEnabled = false
+let rippleTarget = { x: 0, y: 0 }
+let rippleCurrent = { x: 0, y: 0 }
+let rippleStrengthTarget = 0
+let rippleStrength = 0
+
+const writeRipple = () => {
+  const layer = rippleLayer.value
+  if (!layer) return
+  layer.style.setProperty('--hero-mx', `${rippleCurrent.x.toFixed(1)}px`)
+  layer.style.setProperty('--hero-my', `${rippleCurrent.y.toFixed(1)}px`)
+  layer.style.setProperty('--hero-ripple-strength', rippleStrength.toFixed(3))
+}
+
+const animateRipple = () => {
+  rippleCurrent.x += (rippleTarget.x - rippleCurrent.x) * RIPPLE_LERP
+  rippleCurrent.y += (rippleTarget.y - rippleCurrent.y) * RIPPLE_LERP
+  rippleStrength += (rippleStrengthTarget - rippleStrength) * 0.1
+  writeRipple()
+
+  const settled =
+    Math.abs(rippleTarget.x - rippleCurrent.x) < 0.4 &&
+    Math.abs(rippleTarget.y - rippleCurrent.y) < 0.4 &&
+    Math.abs(rippleStrengthTarget - rippleStrength) < 0.01
+  if (settled) {
+    rippleCurrent = { ...rippleTarget }
+    rippleStrength = rippleStrengthTarget
+    writeRipple()
+    rippleFrame = 0
+    return
+  }
+  rippleFrame = window.requestAnimationFrame(animateRipple)
+}
+
+const handleRipplePointerMove = (event: PointerEvent) => {
+  const element = heroSection.value
+  if (!element) return
+  const rect = element.getBoundingClientRect()
+  const x = event.clientX - rect.left
+  const y = event.clientY - rect.top
+  rippleTarget = { x, y }
+  const inQuietZone = Math.abs(x - rect.width / 2) < 410
+  rippleStrengthTarget = inQuietZone ? 0.18 : 1
+  if (!rippleFrame) rippleFrame = window.requestAnimationFrame(animateRipple)
+}
+
+onMounted(() => {
+  updateHeroScroll()
+  rippleEnabled =
+    window.matchMedia('(hover: hover) and (pointer: fine)').matches &&
+    !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (rippleEnabled) {
+    heroSection.value?.addEventListener('pointermove', handleRipplePointerMove, {
+      passive: true,
+    })
+  }
+  window.addEventListener('scroll', handleScroll, { passive: true })
+})
 
 onBeforeUnmount(() => {
-  scrambleTimers.forEach((timer) => window.clearInterval(timer))
+  window.removeEventListener('scroll', handleScroll)
+  heroSection.value?.removeEventListener('pointermove', handleRipplePointerMove)
+  if (scrollFrame) window.cancelAnimationFrame(scrollFrame)
+  if (rippleFrame) window.cancelAnimationFrame(rippleFrame)
 })
 </script>
 
-<style lang="less" scoped>
-:host,
-.w-full.relative {
+<style scoped lang="less">
+.hero-section {
+  --hero-content-opacity: 1;
+  --hero-content-scroll-y: 0px;
+  --hero-quiet-zone-width: 820px;
   position: relative;
-  z-index: 1;
-}
-
-.slogan-section {
-  display: flex;
-  box-sizing: border-box;
-  min-height: clamp(640px, 72vh, 760px);
-  padding: clamp(146px, 15vh, 180px) 16px 42px;
-  align-items: flex-start;
-  justify-content: center;
-}
-
-.hero-copy {
-  gap: 0;
-  text-align: center;
-}
-
-.oss-btn {
-  box-sizing: border-box;
-  text-align: center;
-  letter-spacing: normal;
-  background: linear-gradient(99deg, #00ffb7 2%, #ffffff 68%, #c5dbff 101%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  border-image: linear-gradient(
-      93deg,
-      rgba(0, 102, 254, 0) 0%,
-      #ffffff 50%,
-      rgba(0, 102, 254, 0) 90%
-    )
-    2 0 2 0;
-  border-width: 2px 0px 2px 0px;
-  border-style: solid;
-
-  &-en {
-    width: 280px;
-    height: 40px;
-  }
-
-}
-
-.cloud-button {
-  position: relative;
+  height: 620px;
   overflow: hidden;
-  border: 1px solid transparent;
-  background: transparent;
-  border-radius: 6px;
-  box-shadow: 0 0 28px rgba(23, 123, 255, 0.16);
-  transition:
-    opacity 180ms ease,
-    box-shadow 260ms ease;
+  background: var(--color-home-bg);
+
+  &::after {
+    position: absolute;
+    z-index: 1;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 12%;
+    background: linear-gradient(to bottom, rgba(5, 5, 5, 0), var(--color-home-bg) 94%);
+    content: '';
+    pointer-events: none;
+  }
+}
+
+.hero-texture {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    opacity: 0.18;
+    filter: saturate(0.66) brightness(0.78) contrast(1.06);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 10%, #000 94%, transparent 100%);
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      #000 10%,
+      #000 94%,
+      transparent 100%
+    );
+  }
+}
+
+.hero-texture-left {
+  top: 21%;
+  left: -5%;
+  width: 40vw;
+  max-width: 620px;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 14%, #000 72%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 14%, #000 72%, transparent 100%);
+
+  img {
+    animation: none;
+    transform: none;
+  }
+}
+
+.hero-texture-right {
+  top: 18%;
+  right: -2.5%;
+  width: 38vw;
+  max-width: 600px;
+  mask-image: linear-gradient(270deg, transparent 0%, #000 14%, #000 72%, transparent 100%);
+  -webkit-mask-image: linear-gradient(270deg, transparent 0%, #000 14%, #000 72%, transparent 100%);
+
+  img {
+    animation: none;
+    transform: none;
+  }
+}
+
+.hero-quiet-zone {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: min(calc(var(--hero-quiet-zone-width) + 100px), 100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0,
+    var(--color-home-bg) 50px,
+    var(--color-home-bg) calc(100% - 50px),
+    transparent 100%
+  );
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.hero-ripple-layer {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 280ms ease-out;
+  pointer-events: none;
 
   &::before {
-    content: '';
     position: absolute;
     inset: 0;
-    z-index: -1;
-    border-radius: inherit;
-    background: linear-gradient(99deg, #177bff 0%, #16dec2 100%);
+    background: radial-gradient(
+      circle var(--hero-ripple-radius, 200px) at var(--hero-mx, 50%) var(--hero-my, 50%),
+      rgba(55, 199, 232, 0.065) 0%,
+      rgba(62, 141, 255, 0.035) 42%,
+      transparent 100%
+    );
+    content: '';
+    opacity: calc(var(--hero-ripple-strength, 1) * var(--hero-ripple-power, 1));
   }
 
-  &-en {
-    background: transparent;
+  &::after {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(180, 230, 245, 0.1) 0.65px, transparent 0.65px);
+    background-size: 20px 20px;
+    content: '';
+    mask-image: radial-gradient(
+      circle var(--hero-ripple-dot-radius, 190px) at var(--hero-mx, 50%) var(--hero-my, 50%),
+      #000 0%,
+      rgba(0, 0, 0, 0.65) 44%,
+      transparent 78%
+    );
+    -webkit-mask-image: radial-gradient(
+      circle var(--hero-ripple-dot-radius, 190px) at var(--hero-mx, 50%) var(--hero-my, 50%),
+      #000 0%,
+      rgba(0, 0, 0, 0.65) 44%,
+      transparent 78%
+    );
+    opacity: calc(var(--hero-ripple-strength, 1) * var(--hero-ripple-power, 1) * 0.22);
   }
+}
 
-  &:hover {
-    opacity: 1;
-    box-shadow:
-      0 0 34px rgba(23, 123, 255, 0.22),
-      0 0 28px rgba(22, 222, 194, 0.16);
-  }
+.hero-section:hover .hero-ripple-layer {
+  opacity: 1;
+}
 
+.hero-content {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding-top: 242px;
+  opacity: var(--hero-content-opacity);
+  text-align: center;
+  transform: translate3d(0, var(--hero-content-scroll-y), 0);
+  will-change: opacity, transform;
+}
+
+.hero-logo-anchor {
+  position: absolute;
+  z-index: 4;
+  top: 20px;
+  left: 50%;
+  width: 170px;
+  height: 170px;
+  transform: translateX(-50%);
+}
+
+h1 {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  color: var(--color-home-text);
+  font-size: 60px;
+  font-weight: 600;
+  line-height: 68px;
+  letter-spacing: 0;
+}
+
+.hero-title-accent {
+  color: transparent;
+  background: linear-gradient(100deg, #f7f9fc 0%, #eef4fa 62%, #d8eceb 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+p {
+  max-width: 760px;
+  margin: 18px 0 0;
+  color: var(--color-home-body);
+  font-size: 18px;
+  line-height: 30px;
+  letter-spacing: 0;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
 }
 
 .hero-button {
   position: relative;
-  z-index: 0;
-  flex: 1 1 0;
-  min-width: 128px;
-  max-width: 196px;
-  box-sizing: border-box;
-  line-height: 1;
+  overflow: hidden;
+  width: 148px;
   height: 48px;
-  isolation: isolate;
+  border: 0;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 22px;
+  cursor: pointer;
   transition:
-    color 220ms ease,
-    border-color 220ms ease,
-    background 220ms ease,
-    box-shadow 260ms ease;
+    border-color var(--motion-fast) ease,
+    background-color var(--motion-fast) ease,
+    color var(--motion-fast) ease,
+    transform var(--motion-base) var(--ease-out-expo);
 
-  span {
+  .wave-label {
     position: relative;
     z-index: 1;
-    min-width: 4em;
-    text-align: center;
-    font-variant-numeric: tabular-nums;
+    display: inline-flex;
+    height: 22px;
+    overflow: hidden;
+    line-height: 22px;
   }
 
-  @media (min-width: 640px) {
-    min-width: 148px;
+  .wave-character {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    height: 22px;
+    transform: translateY(0);
+    transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: calc(var(--wave-index) * 28ms);
+    will-change: transform;
+
+    > span {
+      flex: 0 0 22px;
+      height: 22px;
+      line-height: 22px;
+    }
+  }
+
+  &:hover .wave-character {
+    transform: translateY(-100%);
   }
 }
 
-.personal-button {
-  position: relative;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: 6px;
-  background: transparent;
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    padding: 1px;
-    border-radius: inherit;
-    background: linear-gradient(99deg, #177bff 0%, #16dec2 100%);
-    opacity: 0;
-    pointer-events: none;
-    -webkit-mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    transition: opacity 220ms ease;
-  }
-
-  span {
-    color: #ffffff;
-    background: none;
-    background-clip: initial;
-    -webkit-background-clip: initial;
-  }
+.hero-button-primary {
+  color: #ffffff;
+  background: linear-gradient(135deg, #347fff 0%, #279fe9 55%, #22c7d9 100%);
+  box-shadow:
+    0 9px 26px rgba(43, 143, 242, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 
   &:hover {
-    opacity: 1;
-    border-color: transparent;
-    background: transparent;
-    box-shadow: 0 0 26px rgba(23, 123, 255, 0.14);
+    background: linear-gradient(135deg, #438bff 0%, #33aaef 55%, #2dd3e2 100%);
+  }
+}
 
-    &::before {
-      opacity: 1;
-    }
+.hero-button-secondary {
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  color: #edf2f7;
+  background: rgba(255, 255, 255, 0.045);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 
-    span {
-      color: transparent;
-      background: linear-gradient(99deg, #177bff 0%, #16dec2 100%);
-      background-clip: text;
-      -webkit-background-clip: text;
-    }
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.065);
+  }
+}
+
+.hero-orb {
+  position: absolute;
+  z-index: 3;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--color-home-bg-secondary);
+  opacity: 0.42;
+  will-change: transform;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.hero-orb-a {
+  top: 156px;
+  left: calc(50% - 470px);
+  width: 36px;
+  height: 36px;
+  transform: translate3d(var(--pointer-x-5, 0px), var(--pointer-y-5, 0px), 0);
+}
+
+.hero-orb-d {
+  top: 404px;
+  left: calc(50% + 444px);
+  width: 42px;
+  height: 42px;
+  transform: translate3d(
+    calc(0px - var(--pointer-x-5, 0px)),
+    calc(0px - var(--pointer-y-5, 0px)),
+    0
+  );
+}
+
+@media (max-width: 1439px) {
+  .hero-texture-left {
+    width: 42vw;
+  }
+
+  .hero-texture-right {
+    width: 40vw;
+  }
+}
+
+@media (max-width: 1099px) {
+  .hero-texture-left img {
+    opacity: 0.16;
+  }
+
+  .hero-texture-right img {
+    opacity: 0.18;
+  }
+}
+
+@media (max-width: 1023px) {
+  h1 {
+    font-size: 56px;
+    line-height: 68px;
+  }
+
+  p {
+    max-width: calc(100% - (2 * var(--home-page-gutter)));
+  }
+}
+
+@media (max-width: 767px) {
+  .hero-section {
+    height: 560px;
+  }
+
+  .hero-texture-left {
+    display: none;
+  }
+
+  .hero-texture-right img {
+    opacity: 0.18;
+  }
+
+  .hero-ripple-layer {
+    display: none;
+  }
+
+  .hero-logo-anchor {
+    top: 58px;
+    width: 100px;
+    height: 100px;
+  }
+
+  .hero-content {
+    padding-top: 190px;
+  }
+
+  h1 {
+    font-size: 40px;
+    line-height: 50px;
+  }
+
+  p {
+    font-size: 16px;
+    line-height: 25px;
+  }
+
+  .hero-orb {
+    opacity: 0.42;
+  }
+}
+
+@media (hover: none) {
+  .hero-ripple-layer {
+    display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cloud-button,
-  .hero-button,
-  .personal-button {
-    transition: none;
-  }
-}
-
-.button-group-en {
-  @media (max-width: 375px) {
-    flex-direction: column;
-  }
-}
-
-.button-group {
-  width: min(413px, calc(100vw - 76px));
-  align-items: stretch;
-}
-
-.enterprise-link {
-  margin-top: 28px;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 14px;
-  line-height: 20px;
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-  transition: color 180ms ease;
-
-  &::after {
-    content: ' →';
+  .hero-ripple-layer {
+    display: none;
   }
 
-  &:hover {
-    color: #ffffff;
-  }
-}
-
-.description {
-  width: max-content;
-  max-width: 860px;
-  line-height: 1.65;
-}
-
-.description-en {
-  width: min(486px, calc(100vw - 76px));
-}
-
-.button-group-en {
-  width: min(486px, calc(100vw - 76px));
-}
-
-@media (max-width: 768px) {
-  .description,
-  .button-group {
-    width: min(486px, calc(100vw - 56px));
-    min-width: 0;
-  }
-}
-
-.slogan-title {
-  letter-spacing: 0;
-}
-
-.slogan-subTitle {
-  letter-spacing: 0;
-  margin-top: clamp(28px, 3.8vw, 52px);
-}
-
-@media (max-width: 480px) {
-  .slogan-section {
-    min-height: 560px;
-    padding-top: 108px;
-    padding-bottom: 28px;
+  .hero-texture img {
+    animation: none;
   }
 
-  .enterprise-link {
-    font-size: 12px;
+  .hero-orb {
+    animation: none;
   }
 
-  .hero-button {
-    min-width: 116px;
-    height: 48px;
+  .wave-character {
+    transform: none !important;
+    transition: none !important;
   }
 }
 </style>

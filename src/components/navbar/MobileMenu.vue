@@ -155,9 +155,9 @@ const menuOptions = computed<MenuOption[]>(() => [
 
 const productOptions = computed<ProductMenuOption[]>(() => [
   {
-    label: t('productMenu.ideTitle'),
-    key: 'ide',
-    route: { name: 'download', query: { product: 'ide', tab: 'vscode' } },
+    label: t('productMenu.cloudTitle'),
+    key: 'cloud',
+    route: { name: 'cloud' },
   },
   {
     label: t('productMenu.cliTitle'),
@@ -165,9 +165,9 @@ const productOptions = computed<ProductMenuOption[]>(() => [
     route: { name: 'download', query: { product: 'cli', tab: 'cli' } },
   },
   {
-    label: t('productMenu.cloudTitle'),
-    key: 'cloud',
-    route: { name: 'cloud' },
+    label: t('productMenu.ideTitle'),
+    key: 'ide',
+    route: { name: 'download', query: { product: 'ide', tab: 'vscode' } },
   },
 ])
 
