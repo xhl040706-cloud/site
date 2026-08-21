@@ -8,6 +8,16 @@
             <span>CoStrict</span>
           </div>
           <p>{{ t('home.redesign.footer.tagline') }}</p>
+          <div class="footer-qr-codes">
+            <figure class="footer-qr-item">
+              <img :src="officialAccountQr" :alt="`CoStrict ${t('footer.officialAccountLabel')}`" />
+              <figcaption>CoStrict {{ t('footer.officialAccountLabel') }}</figcaption>
+            </figure>
+            <figure class="footer-qr-item">
+              <img :src="communicationGroupQr" :alt="`CoStrict ${t('footer.joinGroupLabel')}`" />
+              <figcaption>CoStrict {{ t('footer.joinGroupLabel') }}</figcaption>
+            </figure>
+          </div>
         </div>
 
         <nav class="footer-columns" aria-label="Footer navigation">
@@ -37,6 +47,8 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import communicationGroupQr from '@/assets/qrcode/communication_group.webp'
+import officialAccountQr from '@/assets/qrcode/official_account.webp'
 
 defineOptions({
   name: 'HomeFooter',
@@ -106,8 +118,8 @@ const navigate = (key: string) => {
 
 <style scoped lang="less">
 .home-footer {
-  padding-top: 42px;
-  background: #050505;
+  padding-top: 72px;
+  background: transparent;
 }
 
 .footer-inner {
@@ -144,9 +156,40 @@ const navigate = (key: string) => {
 .footer-brand p {
   max-width: 320px;
   margin: 16px 0 0;
-  color: #718196;
+  color: #6e7c8e;
   font-size: 14px;
   line-height: 22px;
+}
+
+.footer-qr-codes {
+  display: flex;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.footer-qr-item {
+  display: flex;
+  width: 104px;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+
+  img {
+    display: block;
+    width: 104px;
+    height: 104px;
+    border-radius: 8px;
+    background: #fff;
+  }
+
+  figcaption {
+    color: #718196;
+    font-size: 12px;
+    line-height: 18px;
+    text-align: center;
+    white-space: nowrap;
+  }
 }
 
 .footer-columns {
@@ -162,7 +205,7 @@ const navigate = (key: string) => {
 
   h2 {
     margin: 0 0 12px;
-    color: #a9b5c2;
+    color: #a7b4c3;
     font-size: 13px;
     font-weight: 500;
     line-height: 20px;
@@ -171,7 +214,7 @@ const navigate = (key: string) => {
   button {
     padding: 0;
     border: 0;
-    color: #718196;
+    color: #6e7c8e;
     background: transparent;
     font: inherit;
     font-size: 13px;
@@ -267,7 +310,7 @@ const navigate = (key: string) => {
 
 @media (max-width: 767px) {
   .home-footer {
-    padding: 40px 24px 24px;
+    padding: 72px 24px 24px;
   }
 
   .footer-inner {
@@ -282,6 +325,20 @@ const navigate = (key: string) => {
 
   .footer-main {
     gap: 0;
+  }
+
+  .footer-qr-codes {
+    gap: 12px;
+    margin-top: 18px;
+  }
+
+  .footer-qr-item {
+    width: 92px;
+
+    img {
+      width: 92px;
+      height: 92px;
+    }
   }
 }
 

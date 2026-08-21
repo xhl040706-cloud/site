@@ -201,13 +201,13 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   height: 34px;
-  background: #0b8f7b;
+  background: #14283f;
 }
 
 .notice-close {
   padding: 0;
   border: 0;
-  color: #dcfff7;
+  color: #d9e8fa;
   background: transparent;
   font: inherit;
   cursor: pointer;

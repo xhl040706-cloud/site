@@ -113,12 +113,12 @@ onBeforeUnmount(() => {
   position: static;
   z-index: 0;
   min-height: 34px;
-  background: #0b8f7b;
+  background: #14283f;
   border: 0;
 
   &:hover,
   &:focus-visible {
-    background: #0b8f7b;
+    background: #1b3552;
   }
 
   .august-banner__content {
