@@ -278,9 +278,9 @@ onBeforeUnmount(() => {
 }
 
 .nav-pill {
-  position: absolute;
+  position: fixed;
   z-index: var(--z-navbar);
-  top: 0;
+  top: var(--nav-top);
   left: 50%;
   display: flex;
   align-items: center;
@@ -295,19 +295,9 @@ onBeforeUnmount(() => {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   transform: translateX(-50%);
-  transition:
-    top 420ms cubic-bezier(0.22, 1, 0.36, 1),
-    gap 420ms cubic-bezier(0.22, 1, 0.36, 1),
-    height 420ms cubic-bezier(0.22, 1, 0.36, 1),
-    padding 420ms cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 420ms cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 420ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 420ms cubic-bezier(0.22, 1, 0.36, 1),
-    backdrop-filter 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 
   &.is-morphing {
-    position: fixed;
-    top: var(--nav-top);
     gap: var(--nav-gap);
     height: var(--nav-height);
     padding: 0 var(--nav-padding);
