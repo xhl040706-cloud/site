@@ -1,6 +1,5 @@
 <template>
   <div class="home-page">
-    <HomeHeader />
     <HomeLogoTraveler />
     <main>
       <SloganSection />
@@ -8,8 +7,10 @@
       <CapabilityShowcase />
       <HomeDarkLightTransition />
       <OrganizationValue />
-      <HomeFaq />
-      <HomeFinalCta />
+      <div class="home-closing-zone">
+        <HomeFaq />
+        <HomeFinalCta />
+      </div>
     </main>
     <HomeFooter />
   </div>
@@ -17,8 +18,8 @@
 
 <script setup lang="ts">
 import { useHead } from '@unhead/vue'
+import { useI18n } from 'vue-i18n'
 import { useScrollReveal } from '@/hooks/useScrollReveal'
-import HomeHeader from './components/HomeHeader.vue'
 import HomeLogoTraveler from './components/HomeLogoTraveler.vue'
 import SloganSection from './SloganSection.vue'
 import ProductEnvironment from './components/ProductEnvironment.vue'
@@ -35,15 +36,7 @@ defineOptions({
 
 useScrollReveal()
 
-const organizationSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'CoStrict',
-  url: 'https://costrict.ai/',
-  logo: 'https://costrict.ai/favicon.png',
-  description: 'CoStrict 是面向真实研发流程的企业级 AI 编程平台',
-  sameAs: ['https://github.com/zgsm-ai/costrict'],
-}
+const { t, locale } = useI18n()
 
 const softwareApplicationSchema = {
   '@context': 'https://schema.org',
@@ -53,40 +46,47 @@ const softwareApplicationSchema = {
   applicationCategory: 'DeveloperApplication',
 }
 
-useHead({
-  title: 'CoStrict - 企业级 AI 研发基础设施',
-  meta: [
-    {
-      name: 'description',
-      content: 'CoStrict 让 AI 进入真实研发流程，把个人效率转化为可复用、可治理的组织研发能力。',
-    },
-    { property: 'og:title', content: 'CoStrict - 企业级 AI 研发基础设施' },
-    {
-      property: 'og:description',
-      content: '让 AI 进入真实研发流程，把个人效率转化为可复用、可治理的组织研发能力。',
-    },
-    { property: 'og:url', content: 'https://costrict.ai/' },
-    { property: 'og:image', content: 'https://costrict.ai/og-image.png' },
-    { name: 'twitter:title', content: 'CoStrict - 企业级 AI 研发基础设施' },
-    {
-      name: 'twitter:description',
-      content: '让 AI 进入真实研发流程，把个人效率转化为可复用、可治理的组织研发能力。',
-    },
-    { name: 'twitter:image', content: 'https://costrict.ai/og-image.png' },
-  ],
-  link: [{ rel: 'canonical', href: 'https://costrict.ai/' }],
-  script: [
-    {
-      key: 'organization-json-ld',
-      type: 'application/ld+json',
-      textContent: JSON.stringify(organizationSchema),
-    },
-    {
-      key: 'software-application-json-ld',
-      type: 'application/ld+json',
-      textContent: JSON.stringify(softwareApplicationSchema),
-    },
-  ],
+useHead(() => {
+  const title = t('home.redesign.seo.title')
+  const description = t('home.redesign.seo.description')
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'CoStrict',
+    url: 'https://costrict.ai/',
+    logo: 'https://costrict.ai/favicon.png',
+    description: t('home.redesign.seo.organizationDescription'),
+    sameAs: ['https://github.com/zgsm-ai/costrict'],
+  }
+
+  return {
+    htmlAttrs: { lang: locale.value === 'en' ? 'en' : 'zh-CN' },
+    title,
+    meta: [
+      { name: 'description', content: description },
+      { property: 'og:locale', content: locale.value === 'en' ? 'en_US' : 'zh_CN' },
+      { property: 'og:title', content: title },
+      { property: 'og:description', content: description },
+      { property: 'og:url', content: 'https://costrict.ai/' },
+      { property: 'og:image', content: 'https://costrict.ai/og-image.png' },
+      { name: 'twitter:title', content: title },
+      { name: 'twitter:description', content: description },
+      { name: 'twitter:image', content: 'https://costrict.ai/og-image.png' },
+    ],
+    link: [{ rel: 'canonical', href: 'https://costrict.ai/' }],
+    script: [
+      {
+        key: 'organization-json-ld',
+        type: 'application/ld+json',
+        textContent: JSON.stringify(organizationSchema),
+      },
+      {
+        key: 'software-application-json-ld',
+        type: 'application/ld+json',
+        textContent: JSON.stringify(softwareApplicationSchema),
+      },
+    ],
+  }
 })
 </script>
 
@@ -96,7 +96,7 @@ useHead({
   overflow-x: clip;
   overflow-y: visible;
   color: var(--color-home-text);
-  background: var(--color-home-bg);
+  background: #050505;
   font-family:
     'PingFang SC',
     'Microsoft YaHei',
@@ -105,6 +105,11 @@ useHead({
     -apple-system,
     BlinkMacSystemFont,
     sans-serif;
+}
+
+.home-closing-zone {
+  position: relative;
+  background: #050505;
 }
 
 :global([data-home-reveal]) {

@@ -42,6 +42,6 @@ useHead({
 <style scoped lang="less">
 .august-campaign-page {
   box-sizing: border-box;
-  padding-top: var(--space-16);
+  padding-top: 0;
 }
 </style>

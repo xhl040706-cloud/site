@@ -1,25 +1,42 @@
 <template>
-  <div
-    ref="surfaceElement"
-    class="product-demo-surface"
-    :class="[`is-${demoState}`, { 'is-visible': isVisible }]"
-  >
+  <div class="product-demo-surface" :class="`is-${demoState}`">
     <div class="demo-idle-layer">
+      <div class="demo-builder-heading">
+        <p class="demo-builder-title">
+          {{ t('home.redesign.products.cloud.builderTitle') }}
+        </p>
+        <p class="demo-builder-subtitle">
+          {{ t('home.redesign.products.cloud.builderSubtitle') }}
+        </p>
+      </div>
+
       <div class="demo-composer">
-        <div class="demo-prompt" aria-live="polite">
+        <div class="demo-prompt" :aria-label="t('home.redesign.products.cloud.promptPlaceholder')">
           <span>{{ displayedPrompt }}</span>
-          <span v-if="isTyping" class="demo-caret" aria-hidden="true"></span>
+          <i class="demo-prompt-caret" aria-hidden="true"></i>
         </div>
         <div class="demo-composer-footer">
-          <span>Build · GLM-5.3-Zhipu</span>
+          <div class="demo-settings" aria-hidden="true">
+            <span class="demo-mode">
+              {{ t('home.redesign.products.cloud.buildMode') }}
+              <i class="demo-chevron"></i>
+            </span>
+            <span class="demo-model">
+              {{ t('home.redesign.products.cloud.model') }}
+              <i class="demo-chevron"></i>
+            </span>
+          </div>
+          <span class="demo-workspace">{{ t('home.redesign.products.cloud.workspace') }}</span>
           <button
             class="demo-send"
             type="button"
-            :aria-label="prompt"
-            :disabled="!displayedPrompt"
+            :aria-label="t('home.redesign.products.cloud.sendPrompt')"
+            :disabled="!hasPrompt"
             @click.stop="submitDemo"
           >
-            <span aria-hidden="true">↑</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M22 2 9 15m13-13-7 20-6-7-7-6 20-7Z" />
+            </svg>
           </button>
         </div>
       </div>
@@ -32,7 +49,7 @@
         :src="videoSrc"
         muted
         playsinline
-        preload="auto"
+        preload="metadata"
         @ended="handleEnded"
       ></video>
 
@@ -51,7 +68,8 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, useTemplateRef, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 defineOptions({
   name: 'ProductDemoSurface',
@@ -70,55 +88,18 @@ const props = withDefaults(defineProps<Props>(), {
 
 type DemoState = 'idle' | 'submitting' | 'running' | 'completed'
 
-const surfaceElement = useTemplateRef<HTMLElement>('surfaceElement')
+const { t } = useI18n()
 const videoElement = useTemplateRef<HTMLVideoElement>('videoElement')
 const demoState = ref<DemoState>('idle')
-const displayedPrompt = ref('')
-const isTyping = ref(false)
-const isVisible = ref(false)
-const hasTyped = ref(false)
+const displayedPrompt = ref(props.prompt)
+const hasPrompt = computed(() => displayedPrompt.value.trim().length > 0)
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-const TYPE_INTERVAL = 26
 const SUBMIT_DURATION = reduceMotion ? 0 : 300
-let typingTimer: number | undefined
 let submitTimer: number | undefined
-let visibilityObserver: IntersectionObserver | undefined
 
 const clearTimers = () => {
-  if (typingTimer !== undefined) window.clearTimeout(typingTimer)
   if (submitTimer !== undefined) window.clearTimeout(submitTimer)
-  typingTimer = undefined
   submitTimer = undefined
-}
-
-const completePrompt = () => {
-  if (typingTimer !== undefined) window.clearTimeout(typingTimer)
-  typingTimer = undefined
-  displayedPrompt.value = props.prompt
-  isTyping.value = false
-  hasTyped.value = true
-}
-
-const typePrompt = (index = 0) => {
-  if (!props.isActive || !isVisible.value || hasTyped.value) return
-
-  if (reduceMotion || index >= props.prompt.length) {
-    completePrompt()
-    return
-  }
-
-  isTyping.value = true
-  displayedPrompt.value = props.prompt.slice(0, index + 1)
-  typingTimer = window.setTimeout(() => typePrompt(index + 1), TYPE_INTERVAL)
-}
-
-const preparePrompt = () => {
-  if (!props.isActive || !isVisible.value || demoState.value !== 'idle') return
-  if (hasTyped.value) {
-    displayedPrompt.value = props.prompt
-    return
-  }
-  typePrompt()
 }
 
 const resetDemo = () => {
@@ -129,8 +110,7 @@ const resetDemo = () => {
     video.currentTime = 0
   }
   demoState.value = 'idle'
-  isTyping.value = false
-  displayedPrompt.value = hasTyped.value ? props.prompt : ''
+  displayedPrompt.value = props.prompt
 }
 
 const playVideo = async () => {
@@ -145,13 +125,11 @@ const playVideo = async () => {
   } catch (error) {
     console.warn('Cloud product demo could not start', error)
     resetDemo()
-    preparePrompt()
   }
 }
 
 const submitDemo = () => {
-  if (!props.isActive || demoState.value !== 'idle') return
-  completePrompt()
+  if (!props.isActive || demoState.value !== 'idle' || !hasPrompt.value) return
   demoState.value = 'submitting'
   submitTimer = window.setTimeout(playVideo, SUBMIT_DURATION)
 }
@@ -169,41 +147,19 @@ watch(
   (isActive) => {
     if (!isActive) {
       resetDemo()
-      return
     }
-    preparePrompt()
   },
 )
 
 watch(
   () => props.prompt,
-  () => {
-    hasTyped.value = false
-    displayedPrompt.value = ''
-    preparePrompt()
+  (prompt) => {
+    displayedPrompt.value = prompt
   },
 )
 
-onMounted(() => {
-  if (!('IntersectionObserver' in window)) {
-    isVisible.value = true
-    preparePrompt()
-    return
-  }
-
-  visibilityObserver = new IntersectionObserver(
-    ([entry]) => {
-      isVisible.value = entry?.isIntersecting ?? false
-      if (isVisible.value) preparePrompt()
-    },
-    { threshold: 0.45 },
-  )
-  visibilityObserver.observe(surfaceElement.value!)
-})
-
 onBeforeUnmount(() => {
   clearTimers()
-  visibilityObserver?.disconnect()
   videoElement.value?.pause()
 })
 </script>
@@ -213,7 +169,7 @@ onBeforeUnmount(() => {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 42%, rgba(45, 58, 76, 0.13), transparent 48%), #0d0f13;
+  background: #101011;
 }
 
 .demo-idle-layer,
@@ -225,9 +181,10 @@ onBeforeUnmount(() => {
 .demo-idle-layer {
   z-index: 2;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 28px;
+  box-sizing: border-box;
+  padding: 68px 24px 24px;
   opacity: 1;
   transform: scale(1);
   transform-origin: 82% 68%;
@@ -237,75 +194,179 @@ onBeforeUnmount(() => {
     filter 260ms ease;
 }
 
+.demo-builder-heading {
+  text-align: center;
+}
+
+.demo-builder-title,
+.demo-builder-subtitle {
+  margin: 0;
+  letter-spacing: 0;
+}
+
+.demo-builder-title {
+  color: #f4f4f5;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 30px;
+}
+
+.demo-builder-subtitle {
+  margin-top: 8px;
+  color: #8c8c93;
+  font-size: 12px;
+  line-height: 18px;
+}
+
 .demo-composer {
-  width: min(520px, 100%);
-  min-height: 112px;
+  position: relative;
+  width: min(500px, 76%);
+  min-width: 390px;
+  min-height: 116px;
+  margin-top: 30px;
   overflow: hidden;
-  border: 1px solid rgba(162, 180, 202, 0.15);
-  border-radius: 13px;
-  background: rgba(20, 23, 29, 0.96);
-  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.24);
+  border: 1px solid #2d2d30;
+  border-radius: 12px;
+  background: #111113;
 }
 
 .demo-prompt {
-  min-height: 64px;
-  padding: 18px 18px 12px;
-  color: #dce5ef;
-  font-size: 14px;
-  line-height: 22px;
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  height: 68px;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 14px 16px 8px;
+  color: #d7d7da;
+  font: inherit;
+  font-size: 13px;
+  line-height: 20px;
+  letter-spacing: 0;
+  user-select: none;
 }
 
-.demo-caret {
+.demo-prompt-caret {
   display: inline-block;
   width: 1px;
-  height: 14px;
-  margin-left: 2px;
-  background: #8fa1b5;
-  vertical-align: -2px;
-  animation: caret-blink 900ms steps(1, end) infinite;
+  height: 16px;
+  margin-top: 2px;
+  background: #d7d7da;
+  animation: demo-caret-blink 1s steps(1, end) infinite;
 }
 
 .demo-composer-footer {
   display: flex;
+  box-sizing: border-box;
   height: 48px;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 10px 0 18px;
-  border-top: 1px solid rgba(162, 180, 202, 0.09);
-  color: #718298;
-  font-size: 11px;
+  gap: 10px;
+  padding: 0 9px 9px 10px;
+  color: #a1a1a8;
+  font-size: 12px;
   line-height: 18px;
+}
+
+.demo-settings {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+}
+
+.demo-mode,
+.demo-model {
+  display: inline-flex;
+  height: 32px;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.demo-mode {
+  gap: 9px;
+  padding: 0 11px;
+  border-radius: 9px;
+  color: #e4e4e7;
+  background: #1d1d20;
+}
+
+.demo-model {
+  gap: 7px;
+  color: #dedee1;
+}
+
+.demo-chevron {
+  width: 6px;
+  height: 6px;
+  margin: -3px 1px 0 2px;
+  border-right: 1.5px solid currentcolor;
+  border-bottom: 1.5px solid currentcolor;
+  transform: rotate(45deg);
+}
+
+.demo-workspace {
+  min-width: 0;
+  margin-left: auto;
+  overflow: hidden;
+  color: #8c8c93;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .demo-send,
 .demo-replay {
   display: inline-flex;
-  width: 32px;
-  height: 32px;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 0;
   border-radius: 8px;
-  color: #0d1117;
-  background: #e7edf5;
+  color: #171719;
+  background: #f1f1f2;
   font: inherit;
-  font-size: 17px;
   line-height: 1;
   cursor: pointer;
   transition:
-    color 180ms ease,
-    background 180ms ease,
-    transform 180ms ease;
+    filter 150ms ease,
+    transform 100ms cubic-bezier(0.22, 1, 0.36, 1);
+
+  svg {
+    display: block;
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: currentcolor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+  }
 
   &:hover:not(:disabled) {
-    color: #07121b;
-    background: #ffffff;
-    transform: translateY(-1px);
+    filter: brightness(1.15);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
   }
 
   &:disabled {
+    color: #29292c;
+    background: #77777d;
     cursor: default;
-    opacity: 0.38;
+  }
+}
+
+@keyframes demo-caret-blink {
+  0%,
+  48% {
+    opacity: 1;
+  }
+
+  49%,
+  100% {
+    opacity: 0;
   }
 }
 
@@ -326,7 +387,7 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
+  object-position: right top;
   pointer-events: none;
 }
 
@@ -356,9 +417,33 @@ onBeforeUnmount(() => {
   -webkit-backdrop-filter: blur(10px);
 }
 
-@keyframes caret-blink {
-  50% {
-    opacity: 0;
+@media (max-width: 767px) {
+  .demo-idle-layer {
+    padding: 54px 16px 18px;
+  }
+
+  .demo-builder-title {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .demo-builder-subtitle {
+    max-width: 280px;
+    margin-top: 6px;
+  }
+
+  .demo-composer {
+    width: 100%;
+    min-width: 0;
+    margin-top: 24px;
+  }
+
+  .demo-model {
+    font-size: 11px;
+  }
+
+  .demo-workspace {
+    display: none;
   }
 }
 
@@ -366,7 +451,8 @@ onBeforeUnmount(() => {
   .demo-idle-layer,
   .demo-running-layer,
   .demo-send,
-  .demo-replay {
+  .demo-replay,
+  .demo-prompt-caret {
     animation: none;
     transition: none;
   }

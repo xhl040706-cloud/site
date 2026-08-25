@@ -24,6 +24,11 @@
   },
   "home": {
     "redesign": {
+      "seo": {
+        "title": "CoStrict - 企业级 AI 研发基础设施",
+        "description": "CoStrict 让 AI 进入真实研发流程，把个人效率转化为可复用、可治理的组织研发能力。",
+        "organizationDescription": "CoStrict 是面向真实研发流程的企业级 AI 编程平台"
+      },
       "header": {
         "notice": "这是一条公告通知，可以替换活动文案，可关闭",
         "noticeLink": "了解更多",
@@ -33,7 +38,9 @@
         "docs": "文档",
         "blog": "博客",
         "activity": "活动",
-        "enterprise": "企业版"
+        "enterprise": "企业版",
+        "openMenu": "打开导航菜单",
+        "closeMenu": "关闭导航菜单"
       },
       "hero": {
         "titleLine1": "助力组织提效的",
@@ -47,37 +54,46 @@
         "subtitle": "通过 Cloud、CLI 与 IDE 插件进入不同研发场景，共享同一套组织能力与研发上下文",
         "cloud": {
           "name": "CoStrict Cloud",
-          "title": "在 Web 中组织研发协作",
-          "description": "统一承载研发协作、Agent、知识与组织级能力，让团队围绕同一套研发体系开展工作。",
+          "title": "云端研发空间",
+          "description": "连接远程开发环境，让 AI Coding 工作跨设备无缝流转。",
           "action": "进入 Web",
-          "demoPrompt": "生成一个网页版Todolist",
+          "demoPrompt": "帮我生成一个TodoList。",
+          "builderTitle": "今天想构建什么?",
+          "builderSubtitle": "在当前工作空间和目录中开启新的会话。",
+          "promptPlaceholder": "向 CoStrict 提问...",
+          "buildMode": "Build",
+          "model": "GLM-5.3-Zhipu",
+          "workspace": "/Users",
+          "sendPrompt": "发送提示词",
           "replayDemo": "重新演示"
         },
         "cli": {
           "name": "CoStrict CLI",
-          "title": "在终端中完成 AI 研发任务",
-          "description": "在命令行中调用 CoStrict，结合项目上下文完成分析、开发与验证等研发任务。",
+          "title": "终端驱动 AI 开发流程",
+          "description": "通过命令行直接调用 CoStrict，完成代码生成、分析、调试与自动化研发任务。",
           "action": "安装 CLI"
         },
         "ide": {
           "name": "IDE 插件",
-          "title": "在编码现场使用 CoStrict",
-          "description": "在编辑器内直接调用 AI 能力与项目上下文，减少工具切换，让开发过程保持连续。",
+          "title": "IDE 内原生使用 AI",
+          "description": "在熟悉的开发环境中直接调用 AI 能力，理解项目上下文，辅助代码编写与优化。",
           "action": "安装插件"
         }
       },
       "capabilities": {
         "sectionTitle": "面向组织研发的平台化能力",
-        "sectionSubtitle": "从协同、Agent能力、安全到效能，覆盖 AI 研发从任务执行到组织治理的关键环节。",
+        "sectionSubtitle": "从协同、技能市场、安全到效能，覆盖 AI 研发从任务执行到组织治理的关键环节。",
+        "expandVideo": "放大观看",
+        "collapseVideo": "缩回卡片",
         "collaboration": {
-          "label": "组织协同",
+          "label": "协作平台",
           "title": "让人与 AI 围绕同一研发流程协作",
           "description": "将需求分析、方案设计、开发、测试与验证编排为可执行流程，支持 AI 与研发人员分工协作，并在关键节点由人来审核确认。"
         },
         "agents": {
-          "label": "Agent 能力中心",
-          "title": "让成熟 Agent 能力在组织内复用",
-          "description": "统一沉淀、管理和共享面向不同研发任务的 Agent 能力，让成熟方法在团队与项目之间直接复用，减少重复建设。"
+          "label": "技能市场",
+          "title": "让成熟技能在组织内被发现和复用",
+          "description": "统一沉淀、管理和共享面向不同研发任务的技能，让团队可以按需发现和复用成熟方法，减少重复建设。"
         },
         "knowledge": {
           "label": "知识库",
@@ -112,7 +128,7 @@
             "description": "知识、Agent 能力与成熟研发实践能够持续积累和复用，减少重复探索，让组织能力随着项目不断沉淀。"
           },
           "governance": {
-            "title": "让质量与风险控制更早发生",
+            "title": "让研发质量与安全可控",
             "description": "将人工审核、安全检查与研发规范融入过程，让问题更早暴露，让 AI 研发始终运行在清晰、可控的边界内。"
           }
         },
@@ -154,7 +170,7 @@
       },
       "faq": {
         "title": "开始使用前，你可能关心的问题",
-        "subtitle": "快速了解 CoStrict 的产品入口、使用方式与企业部署边界。",
+        "subtitle": "快速了解 CoStrict 的使用方式与常见问题。",
         "items": {
           "entry": {
             "question": "Cloud、CLI 和 IDE 插件应该如何选择？",
@@ -162,27 +178,31 @@
           },
           "installation": {
             "question": "如何下载和安装 CoStrict？",
-            "answer": "进入产品页面，选择适合的开发环境，并按照对应安装指引完成配置即可。"
+            "answer": "选择 CLI 或 IDE 插件入口，并按照对应安装指引完成配置即可。"
           },
           "team": {
             "question": "企业团队如何使用 CoStrict？",
-            "answer": "团队可以通过 CoStrict 统一使用组织协同、Agent 能力、知识、安全与效能等平台能力，让个人 AI 使用逐步进入统一的组织研发体系。也可以查看企业版联系私有化部署。"
+            "answer": "团队可以通过 CoStrict 统一使用组织协同、Agent 能力、知识、安全与效能等平台能力，让个人 AI 使用逐步进入统一的组织研发体系。"
           },
           "security": {
             "question": "CoStrict 如何帮助保障代码和数据安全？",
-            "answer": "CoStrict 提供代码安全扫描、过程审核与研发规范等能力，帮助团队将质量与安全控制前置到 AI 研发过程中。具体企业安全方案以企业版说明为准。"
+            "answer": "CoStrict 提供代码安全扫描、过程审核与研发规范等能力，帮助团队将质量与安全控制前置到 AI 研发过程中。具体能力与适用范围以产品当前版本为准。"
           },
           "pricing": {
             "question": "Credits、套餐与价格如何计算？",
             "answer": "不同产品与使用方式对应的具体额度和计费规则，请以最新定价页面为准。"
+          },
+          "deployment": {
+            "question": "CoStrict 是否支持企业私有化部署？",
+            "answer": "如有私有化部署需求，可通过企业版入口联系团队。具体部署方式、环境要求与服务范围以企业方案为准。"
           }
         }
       },
       "finalCta": {
         "title": "把个人 AI 效率，转化为组织研发能力",
         "description": "从个人开发到团队协同，让知识、Agent 与研发实践持续沉淀和复用。",
-        "primary": "下载 CoStrict",
-        "secondary": "进入 Web"
+        "primary": "进入 Web",
+        "secondary": "下载 CoStrict"
       },
       "footer": {
         "tagline": "助力组织提效的 AI 研发基础设施",

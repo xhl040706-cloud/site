@@ -4,13 +4,13 @@ import { shallowMount } from '@vue/test-utils'
 import { createI18n } from 'vue-i18n'
 import zh from '@/locales/zh.json'
 import en from '@/locales/en.json'
-import HomeIndex from '@/views/home/index.vue'
 import OperationPage from '@/views/operation/OperationPage.vue'
-import AugustDeveloperMonthBanner from '@/views/home/components/AugustDeveloperMonthBanner.vue'
 import AugustDeveloperMonthSection from '@/views/operation/components/AugustDeveloperMonthSection.vue'
 import operationPageSource from '@/views/operation/OperationPage.vue?raw'
 import pricingPageSource from '@/views/pricing/PricingPage.vue?raw'
 import augustPageSource from '@/views/operation/AugustDeveloperMonthPage.vue?raw'
+import homePageSource from '@/views/home/index.vue?raw'
+import siteHeaderSource from '@/components/SiteHeader.vue?raw'
 import appSource from '@/App.vue?raw'
 import { routes } from '@/router'
 
@@ -34,25 +34,18 @@ describe('August Developer Month page integration', () => {
     window.history.replaceState({}, '', '/operation')
   })
 
-  it('renders the scheduled activity banner before the homepage Hero', () => {
-    const wrapper = shallowMount(HomeIndex, { global: { plugins: [i18n] } })
-    const banner = wrapper.findComponent(AugustDeveloperMonthBanner)
-    const hero = wrapper.findComponent({ name: 'SloganSection' })
-
-    expect(banner.exists()).toBe(true)
-    expect(banner.props()).toEqual({})
-    expect(hero.exists()).toBe(true)
-    expect(wrapper.html().indexOf(banner.html())).toBeLessThan(wrapper.html().indexOf(hero.html()))
+  it('renders the scheduled activity banner inside the shared site Header', () => {
+    expect(appSource).toContain('<SiteHeader v-if="showNavbar" />')
+    expect(siteHeaderSource).toContain('<AugustDeveloperMonthBanner embedded />')
+    expect(siteHeaderSource.indexOf('<AugustDeveloperMonthBanner embedded />')).toBeLessThan(
+      siteHeaderSource.indexOf('<div class="main-nav-row">'),
+    )
+    expect(homePageSource).not.toContain('<HomeHeader')
   })
 
-  it('renders the same full-width activity banner before the pricing content', () => {
-    expect(pricingPageSource).toContain(
-      "import AugustDeveloperMonthBanner from '@/views/home/components/AugustDeveloperMonthBanner.vue'",
-    )
+  it('uses the shared Header banner instead of a second pricing-page banner', () => {
+    expect(pricingPageSource).not.toContain('AugustDeveloperMonthBanner')
     expect(pricingPageSource).toContain('<div class="pricing-page-shell">')
-    expect(pricingPageSource.indexOf('<AugustDeveloperMonthBanner />')).toBeLessThan(
-      pricingPageSource.indexOf('<div class="pricing-page pt-39.5 pb-23 relative">'),
-    )
     expect(pricingPageSource).toMatch(/\.pricing-page-shell\s*\{[^}]*width: 100%;/)
   })
 
@@ -119,7 +112,7 @@ describe('August Developer Month page integration', () => {
 
     expect(augustRoute).toBeDefined()
     expect(augustRoute?.name).toBe('augustDeveloperMonth')
-    expect(augustRoute?.meta?.hideNavbar).not.toBe(true)
+    expect(augustRoute?.meta?.hideNavbar).toBeUndefined()
   })
 
   it('renders the complete standalone campaign without stage resolution or activity rows', async () => {
@@ -142,14 +135,38 @@ describe('August Developer Month page integration', () => {
     expect(wrapper.findAll('[data-activity-row]')).toHaveLength(0)
     expect(augustPageSource).not.toContain('resolveAugustDeveloperMonthStage')
     expect(augustPageSource).not.toContain('pt-16')
-    expect(augustPageSource).toContain('padding-top: var(--space-16)')
+    expect(augustPageSource).not.toContain('<HomeHeader')
+    expect(augustPageSource).toContain('padding-top: 0')
   })
 
-  it('shows the global navigation on the standalone campaign route', () => {
+  it('uses the shared navigation on homepage, campaign, and existing site routes', () => {
     const augustRoute = routes.find((route) => route.path === '/operation/august-developer-month')
+    const homeRoute = routes.find((route) => route.path === '/')
 
-    expect(augustRoute?.meta?.hideNavbar).not.toBe(true)
-    expect(appSource).toContain('<navbar v-if="showNavbar" />')
+    expect(homeRoute?.meta?.hideNavbar).toBeUndefined()
+    expect(augustRoute?.meta?.hideNavbar).toBeUndefined()
+    expect(appSource).toContain('<SiteHeader v-if="showNavbar" />')
     expect(appSource).toContain('route.meta.hideNavbar !== true')
+    expect(siteHeaderSource).toContain('noticeEnabled: true')
+    expect(siteHeaderSource).toContain("!['home', 'augustDeveloperMonth'].includes")
+    expect(siteHeaderSource).toContain(
+      "'--brand-opacity': `${isHomeRoute.value ? 1 - progress : 1}`",
+    )
+  })
+
+  it('removes unavailable English navigation items without leaving placeholders', () => {
+    expect(siteHeaderSource).toContain("const isEnglish = computed(() => locale.value === 'en')")
+    expect(siteHeaderSource).toMatch(
+      /v-if="!isEnglish"[\s\S]*?activeNav === 'pricing'[\s\S]*?home\.redesign\.header\.pricing/,
+    )
+    expect(siteHeaderSource).toMatch(
+      /v-if="!isEnglish"[\s\S]*?activeNav === 'blog'[\s\S]*?home\.redesign\.header\.blog/,
+    )
+    expect(siteHeaderSource).toContain(
+      '<button v-if="!isEnglish" type="button" @click="navigateMobile(\'pricing\')">',
+    )
+    expect(siteHeaderSource).toContain(
+      '<button v-if="!isEnglish" type="button" @click="navigateMobile(\'blog\')">',
+    )
   })
 })

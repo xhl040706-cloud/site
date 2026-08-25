@@ -28,9 +28,6 @@ export const routes = [
     path: '/',
     name: 'home',
     component: homeRoute.load,
-    meta: {
-      hideNavbar: true,
-    },
   },
   {
     path: '/cloud',

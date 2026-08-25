@@ -45,7 +45,14 @@
                 :replay-label="t('home.redesign.products.cloud.replayDemo')"
                 :video-src="cloudDemoVideoUrl"
               />
-              <img v-else class="product-image" :src="product.imageSrc" :alt="product.name" />
+              <img
+                v-else
+                class="product-image"
+                :src="product.imageSrc"
+                :alt="product.name"
+                loading="lazy"
+                decoding="async"
+              />
             </div>
           </div>
           <div class="product-copy">
@@ -69,8 +76,10 @@ import { computed, ref, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import cloudImageUrl from '@/assets/home/redesign/s3-cloud-main.webp'
-import cliImageUrl from '@/assets/home/redesign/s3-cli-main.webp'
+import cliImageUrl from '@/assets/home/redesign/s3-cli-costrict.webp'
+import cliImageEnUrl from '@/assets/home/redesign/s3-cli-costrict-en.webp'
 import ideImageUrl from '@/assets/home/redesign/s3-ide-main.webp'
+import ideImageEnUrl from '@/assets/home/redesign/s3-ide-main-en.webp'
 import logoSvgUrl from '@/assets/logo3d/costrict-symbol.svg?url'
 import cloudDemoVideoUrl from '@/assets/video/cloud-run-demo.mp4'
 import ProductDemoSurface from './ProductDemoSurface.vue'
@@ -80,6 +89,8 @@ defineOptions({
 })
 
 type ProductKey = 'cloud' | 'cli' | 'ide'
+type ProductImageKey = Exclude<ProductKey, 'cloud'>
+type ProductLocale = 'zh' | 'en'
 
 interface ProductCard {
   key: ProductKey
@@ -90,16 +101,22 @@ interface ProductCard {
   imageSrc: string
 }
 
-const PRODUCT_IMAGES: Record<ProductKey, string> = {
-  cloud: cloudImageUrl,
-  cli: cliImageUrl,
-  ide: ideImageUrl,
+const PRODUCT_IMAGES: Record<ProductImageKey, Record<ProductLocale, string>> = {
+  cli: {
+    zh: cliImageUrl,
+    en: cliImageEnUrl,
+  },
+  ide: {
+    zh: ideImageUrl,
+    en: ideImageEnUrl,
+  },
 }
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const router = useRouter()
 const productGrid = useTemplateRef<HTMLElement>('productGrid')
 const activeProduct = ref<ProductKey>('cloud')
+const productLocale = computed<ProductLocale>(() => (locale.value === 'en' ? 'en' : 'zh'))
 
 const productTitle = computed(() => {
   const title = t('home.redesign.products.title')
@@ -118,13 +135,13 @@ const products = computed<ProductCard[]>(() =>
     title: t(`home.redesign.products.${key}.title`),
     description: t(`home.redesign.products.${key}.description`),
     action: t(`home.redesign.products.${key}.action`),
-    imageSrc: PRODUCT_IMAGES[key],
+    imageSrc: key === 'cloud' ? cloudImageUrl : PRODUCT_IMAGES[key][productLocale.value],
   })),
 )
 
 const openProduct = (key: ProductKey) => {
   if (key === 'cloud') {
-    router.push({ name: 'cloud' })
+    window.open('https://zgsm.sangfor.com/', '_blank', 'noopener')
     return
   }
 
@@ -433,13 +450,13 @@ const handleGridFocusOut = (event: FocusEvent) => {
   --stage-width: 100%;
   --stage-left: 50%;
   --stage-fixed-width: 627px;
-  --stage-collapsed-left: 50%;
-  --stage-collapsed-translate-x: -18%;
+  --stage-collapsed-left: 0;
+  --stage-collapsed-translate-x: 0;
 
   .product-image {
-    object-position: 12% top;
-    transform: scale(1.14);
-    transform-origin: 12% 18%;
+    object-position: left top;
+    transform: scale(1.05);
+    transform-origin: left 24%;
   }
 }
 
@@ -447,13 +464,13 @@ const handleGridFocusOut = (event: FocusEvent) => {
   --stage-width: 100%;
   --stage-left: 50%;
   --stage-fixed-width: 684px;
-  --stage-collapsed-left: 50%;
-  --stage-collapsed-translate-x: -52%;
+  --stage-collapsed-left: 100%;
+  --stage-collapsed-translate-x: -100%;
 
   .product-image {
-    object-position: 48% 8%;
+    object-position: right 8%;
     transform: scale(1.035);
-    transform-origin: 48% top;
+    transform-origin: right top;
   }
 }
 
@@ -478,6 +495,10 @@ const handleGridFocusOut = (event: FocusEvent) => {
       .product-image {
         filter: saturate(0.92) brightness(0.93) contrast(1.025);
         opacity: 1;
+      }
+
+      .product-visual-cli .product-image {
+        transform: scale(1.1);
       }
 
       h3 {
@@ -545,7 +566,36 @@ const handleGridFocusOut = (event: FocusEvent) => {
   }
 
   .product-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+  }
+
+  .product-card {
+    display: block;
+    min-height: 0;
+    transform: none;
+
+    &:nth-child(n) {
+      transform: none;
+    }
+
+    .product-copy {
+      height: auto;
+      padding-top: 14px;
+    }
+
+    .product-detail {
+      position: static;
+    }
+
+    .product-description {
+      margin-top: 8px;
+    }
+
+    .product-detail > button {
+      display: inline-flex;
+      margin-top: 12px;
+    }
   }
 }
 
@@ -568,7 +618,17 @@ const handleGridFocusOut = (event: FocusEvent) => {
   }
 
   .product-visual {
-    height: 350px;
+    height: auto;
+    aspect-ratio: 1.28 / 1;
+  }
+
+  .product-visual-stage {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    transform: none;
   }
 }
 

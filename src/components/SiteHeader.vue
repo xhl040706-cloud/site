@@ -1,7 +1,11 @@
 <template>
   <header
     class="home-header"
-    :class="{ 'without-notice': !showNotice, 'is-morphing': scrollProgress > 0 }"
+    :class="{
+      'without-notice': !showNotice,
+      'is-morphing': scrollProgress > 0,
+      'is-overlay': isOverlayRoute,
+    }"
     :style="navStyle"
   >
     <div v-if="showNotice" class="notice-bar">
@@ -18,7 +22,12 @@
 
     <div class="main-nav-row">
       <div class="main-nav-inner">
-        <button class="brand-anchor" type="button" @click="toHome">
+        <button
+          class="brand-anchor"
+          :class="{ 'is-morphing': scrollProgress > 0 && !isHomeRoute }"
+          type="button"
+          @click="toHome"
+        >
           <img src="@/assets/logo.webp" alt="" />
           <span>CoStrict</span>
         </button>
@@ -30,6 +39,7 @@
         >
           <ProductMenu class="home-product-menu" />
           <button
+            v-if="!isEnglish"
             class="nav-pill-item"
             :class="{ active: activeNav === 'pricing' }"
             type="button"
@@ -41,6 +51,7 @@
             {{ t('home.redesign.header.docs') }}
           </a>
           <button
+            v-if="!isEnglish"
             class="nav-pill-item"
             :class="{ active: activeNav === 'blog' }"
             type="button"
@@ -56,9 +67,6 @@
           >
             {{ t('home.redesign.header.activity') }}
           </button>
-          <button class="nav-pill-item" type="button" @click="toEnterprise">
-            {{ t('home.redesign.header.enterprise') }}
-          </button>
         </nav>
 
         <div class="actions-anchor" :class="{ 'is-morphing': scrollProgress > 0 }">
@@ -69,35 +77,133 @@
             :is-ccf-competition-page="false"
             @update:is-open="handleLanguageSwitcherUpdate"
           />
+          <button
+            class="mobile-menu-toggle"
+            type="button"
+            :aria-label="
+              isMobileNavOpen
+                ? t('home.redesign.header.closeMenu')
+                : t('home.redesign.header.openMenu')
+            "
+            :aria-expanded="isMobileNavOpen"
+            aria-controls="home-mobile-navigation"
+            @click="toggleMobileNav"
+          >
+            <span></span>
+            <span></span>
+          </button>
         </div>
       </div>
+
+      <Transition name="mobile-nav">
+        <nav
+          v-if="isMobileNavOpen"
+          id="home-mobile-navigation"
+          class="mobile-nav-sheet"
+          aria-label="Mobile navigation"
+        >
+          <div class="mobile-nav-product">
+            <button
+              class="mobile-nav-product-trigger"
+              :class="{ active: isProductNavigationActive }"
+              type="button"
+              :aria-expanded="isMobileProductMenuOpen"
+              aria-controls="home-mobile-product-navigation"
+              @click="toggleMobileProductMenu"
+            >
+              <span>{{ t('home.redesign.header.product') }}</span>
+              <svg viewBox="0 0 10 10" aria-hidden="true">
+                <path d="M2 3.5L5 6.5L8 3.5" />
+              </svg>
+            </button>
+            <div
+              v-if="isMobileProductMenuOpen"
+              id="home-mobile-product-navigation"
+              class="mobile-product-items"
+            >
+              <button
+                v-for="item in productNavigationItems"
+                :key="item.key"
+                class="mobile-product-item"
+                :class="{ active: isMobileProductActive(item.key) }"
+                type="button"
+                @click="navigateMobileProduct(item.route)"
+              >
+                <span>{{ item.title }}</span>
+                <small>{{ item.description }}</small>
+              </button>
+            </div>
+          </div>
+          <button v-if="!isEnglish" type="button" @click="navigateMobile('pricing')">
+            {{ t('home.redesign.header.pricing') }}
+          </button>
+          <a :href="docsUrl" target="_blank" rel="noopener" @click="closeMobileNav">
+            {{ t('home.redesign.header.docs') }}
+          </a>
+          <button v-if="!isEnglish" type="button" @click="navigateMobile('blog')">
+            {{ t('home.redesign.header.blog') }}
+          </button>
+          <button type="button" @click="navigateMobile('operation')">
+            {{ t('home.redesign.header.activity') }}
+          </button>
+        </nav>
+      </Transition>
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
+import { useRouter, type RouteLocationRaw } from 'vue-router'
 import GithubStars from '@/components/navbar/GithubStars.vue'
 import LanguageSwitcher from '@/components/navbar/LanguageSwitcher.vue'
 import ProductMenu from '@/components/navbar/ProductMenu.vue'
 import AugustDeveloperMonthBanner from './AugustDeveloperMonthBanner.vue'
 
 defineOptions({
-  name: 'HomeHeader',
+  name: 'SiteHeader',
+})
+
+interface ProductNavigationItem {
+  key: 'cloud' | 'cli' | 'ide'
+  title: string
+  description: string
+  route: RouteLocationRaw
+}
+
+interface Props {
+  noticeEnabled?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  noticeEnabled: true,
 })
 
 const { t, locale } = useI18n()
 const router = useRouter()
-const showNotice = ref(true)
+const isEnglish = computed(() => locale.value === 'en')
+const showNotice = ref(props.noticeEnabled)
 const scrollProgress = ref(0)
 const isLanguageSwitcherOpen = ref(false)
+const isMobileNavOpen = ref(false)
+const isMobileProductMenuOpen = ref(false)
 let scrollFrame = 0
 const docsUrl = computed(() => `https://docs.costrict.ai${locale.value === 'en' ? '/en' : ''}`)
 const NOTICE_HEIGHT = 34
 const NAV_MORPH_DISTANCE = 72
 const GLASS_REVEAL_START = 48
+const isHomeRoute = computed(() => router.currentRoute.value.name === 'home')
+const isOverlayRoute = computed(
+  () => !['home', 'augustDeveloperMonth'].includes(router.currentRoute.value.name as string),
+)
+
+watch(
+  () => props.noticeEnabled,
+  (enabled) => {
+    showNotice.value = enabled
+  },
+)
 
 const navStyle = computed<Record<string, string>>(() => {
   const progress = scrollProgress.value
@@ -122,16 +228,45 @@ const navStyle = computed<Record<string, string>>(() => {
     '--nav-saturation': `${100 + 25 * glassReveal}%`,
     '--nav-shadow-alpha': `${0.26 * glassReveal}`,
     '--nav-highlight-alpha': `${0.055 * glassReveal}`,
-    '--brand-opacity': `${1 - progress}`,
+    '--brand-opacity': `${isHomeRoute.value ? 1 - progress : 1}`,
   }
 })
 
 const activeNav = computed(() => {
   const name = router.currentRoute.value.name as string
   if (name === 'blogDetail') return 'blog'
+  if (['augustDeveloperMonth', 'ccfCompetition'].includes(name)) return 'operation'
   if (['home', 'download', 'pricing', 'blog', 'operation'].includes(name)) return name
   return ''
 })
+const isProductNavigationActive = computed(() => {
+  const route = router.currentRoute.value
+  const productKey = route.query.product
+  return (
+    route.name === 'cloud' ||
+    (route.name === 'download' && ['cli', 'ide'].includes(productKey as string))
+  )
+})
+const productNavigationItems = computed<ProductNavigationItem[]>(() => [
+  {
+    key: 'cloud',
+    title: t('productMenu.cloudTitle'),
+    description: t('productMenu.cloudDesc'),
+    route: { name: 'cloud' },
+  },
+  {
+    key: 'cli',
+    title: t('productMenu.cliTitle'),
+    description: t('productMenu.cliDesc'),
+    route: { name: 'download', query: { product: 'cli', tab: 'cli' } },
+  },
+  {
+    key: 'ide',
+    title: t('productMenu.ideTitle'),
+    description: t('productMenu.ideDesc'),
+    route: { name: 'download', query: { product: 'ide', tab: 'vscode' } },
+  },
+])
 
 const toHome = () => {
   if (router.currentRoute.value.name === 'home') {
@@ -141,8 +276,35 @@ const toHome = () => {
   router.push({ name: 'home' })
 }
 const toRoute = (name: string) => router.push({ name })
-const toEnterprise = () =>
-  window.open('https://docs.costrict.ai/deployment/introduction/', '_blank', 'noopener')
+
+const closeMobileNav = () => {
+  isMobileNavOpen.value = false
+  isMobileProductMenuOpen.value = false
+}
+
+const toggleMobileNav = () => {
+  isMobileNavOpen.value = !isMobileNavOpen.value
+}
+
+const navigateMobile = (name: string) => {
+  closeMobileNav()
+  toRoute(name)
+}
+
+const toggleMobileProductMenu = () => {
+  isMobileProductMenuOpen.value = !isMobileProductMenuOpen.value
+}
+
+const navigateMobileProduct = (route: RouteLocationRaw) => {
+  closeMobileNav()
+  router.push(route)
+}
+
+const isMobileProductActive = (key: ProductNavigationItem['key']) => {
+  const route = router.currentRoute.value
+  if (key === 'cloud') return route.name === 'cloud'
+  return route.name === 'download' && route.query.product === key
+}
 
 const updateScrollState = () => {
   scrollProgress.value = Math.min(1, Math.max(0, window.scrollY / NAV_MORPH_DISTANCE))
@@ -165,13 +327,19 @@ const handleLanguageSwitcherUpdate = (value: boolean) => {
   isLanguageSwitcherOpen.value = value
 }
 
+const handleKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape') closeMobileNav()
+}
+
 onMounted(() => {
   updateScrollState()
   window.addEventListener('scroll', handleScroll, { passive: true })
+  window.addEventListener('keydown', handleKeydown)
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', handleScroll)
+  window.removeEventListener('keydown', handleKeydown)
   if (scrollFrame) window.cancelAnimationFrame(scrollFrame)
 })
 </script>
@@ -182,6 +350,22 @@ onBeforeUnmount(() => {
   z-index: var(--z-navbar);
   height: 94px;
   background: var(--color-home-bg);
+
+  &.is-overlay {
+    height: 34px;
+
+    .main-nav-row {
+      position: fixed;
+      z-index: var(--z-navbar);
+      top: var(--nav-top);
+      right: 0;
+      left: 0;
+    }
+
+    &.without-notice {
+      height: 0;
+    }
+  }
 
   &.without-notice {
     height: 60px;
@@ -271,6 +455,19 @@ onBeforeUnmount(() => {
   white-space: nowrap;
   cursor: pointer;
   opacity: var(--brand-opacity);
+  transition:
+    top 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    height 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 200ms ease;
+
+  &.is-morphing {
+    position: fixed;
+    z-index: var(--z-navbar);
+    top: var(--nav-top);
+    left: max(32px, calc((100vw - var(--home-content-max-width)) / 2));
+    height: var(--nav-height);
+  }
+
   img {
     width: 28px;
     height: 28px;
@@ -402,7 +599,7 @@ onBeforeUnmount(() => {
     position: fixed;
     z-index: var(--z-navbar);
     top: var(--nav-top);
-    right: max(32px, calc((100vw - var(--home-content-max-width)) / 2));
+    right: max(80px, calc((100vw - var(--home-content-max-width)) / 2));
     height: var(--nav-height);
   }
 
@@ -449,6 +646,157 @@ onBeforeUnmount(() => {
   }
 }
 
+.mobile-menu-toggle {
+  display: none;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #dce6f0;
+  background: rgba(255, 255, 255, 0.035);
+  cursor: pointer;
+
+  span {
+    display: block;
+    width: 14px;
+    height: 1px;
+    margin: 4px auto;
+    background: currentColor;
+    transition: transform 180ms ease;
+  }
+
+  &[aria-expanded='true'] {
+    span:first-child {
+      transform: translateY(2.5px) rotate(45deg);
+    }
+
+    span:last-child {
+      transform: translateY(-2.5px) rotate(-45deg);
+    }
+  }
+
+  &:hover,
+  &:focus-visible {
+    border-color: rgba(101, 207, 230, 0.56);
+    color: #ffffff;
+    outline: none;
+  }
+}
+
+.mobile-nav-sheet {
+  position: fixed;
+  z-index: calc(var(--z-navbar) + 1);
+  top: calc(var(--nav-top) + var(--nav-height) + 8px);
+  right: 32px;
+  display: grid;
+  min-width: 176px;
+  padding: 6px;
+  border: 1px solid rgba(125, 151, 181, 0.18);
+  border-radius: 8px;
+  background: rgba(9, 13, 19, 0.96);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.38);
+  backdrop-filter: blur(18px) saturate(120%);
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
+
+  button,
+  a {
+    padding: 10px 12px;
+    border: 0;
+    border-radius: 6px;
+    color: #b7c4d1;
+    background: transparent;
+    font: inherit;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.06);
+      outline: none;
+    }
+  }
+}
+
+.mobile-nav-product-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  svg {
+    width: 10px;
+    height: 10px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.4;
+    transition: transform 180ms ease;
+  }
+
+  &[aria-expanded='true'] svg {
+    transform: rotate(180deg);
+  }
+
+  &.active {
+    color: #ffffff;
+  }
+}
+
+.mobile-product-items {
+  display: grid;
+  gap: 2px;
+  padding: 0 4px 4px;
+}
+
+.mobile-product-item {
+  display: grid;
+  gap: 2px;
+  padding: 8px 12px 9px 24px !important;
+
+  span {
+    color: #dce6f0;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 18px;
+  }
+
+  small {
+    overflow: hidden;
+    color: #8190a0;
+    font-size: 12px;
+    line-height: 17px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &.active {
+    background: rgba(255, 255, 255, 0.06);
+
+    span {
+      color: #ffffff;
+    }
+  }
+}
+
+.mobile-nav-enter-active,
+.mobile-nav-leave-active {
+  transition:
+    opacity 180ms ease,
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mobile-nav-enter-from,
+.mobile-nav-leave-to {
+  opacity: 0;
+  transform: translateY(-6px) scale(0.98);
+}
+
 @media (max-width: 1023px) {
   .main-nav-inner {
     width: calc(100% - 64px);
@@ -456,6 +804,21 @@ onBeforeUnmount(() => {
 
   .nav-pill {
     display: none;
+  }
+
+  .mobile-menu-toggle {
+    display: grid;
+    place-content: center;
+  }
+
+  .actions-anchor.is-morphing {
+    position: static;
+    height: 60px;
+  }
+
+  .brand-anchor.is-morphing {
+    position: static;
+    height: 60px;
   }
 }
 
@@ -481,7 +844,12 @@ onBeforeUnmount(() => {
   }
 
   .actions-anchor {
-    gap: 16px;
+    gap: 12px;
+  }
+
+  .mobile-nav-sheet {
+    right: 24px;
+    min-width: 164px;
   }
 }
 

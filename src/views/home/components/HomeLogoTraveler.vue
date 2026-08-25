@@ -1,6 +1,6 @@
 <template>
   <div ref="traveler" class="home-logo-traveler" aria-hidden="true" data-logo-traveler>
-    <LogoScene ref="logoScene" />
+    <LogoScene ref="logoScene" :auto-rotate="false" :floating="false" :pointer-parallax="false" />
   </div>
 </template>
 
@@ -13,24 +13,31 @@ defineOptions({ name: 'HomeLogoTraveler' })
 
 interface LogoSceneInstance {
   controls: LogoSceneControls
-  setPointerNormalized: (x: number, y: number) => void
   setRenderEnabled: (enabled: boolean) => void
 }
 
 const TRAVELER_SIZE = 180
-const HERO_ROTATION = { x: -0.28, y: 0.14, z: 0 }
-const HERO_TILT_Z = 0.2
+const HERO_ROTATION = { x: -0.24, y: 0.12, z: 0 }
 const DOCK_ROTATION = { x: -0.08, y: 0.12, z: 0 }
+const SPIN_TURNS = 2
+const HERO_SYMBOL_SIZE = 44
+const COLLAPSE_START = 28
+const COLLAPSE_END = 124
+const SYMBOL_REVEAL_START = 82
+const SYMBOL_REVEAL_END = 134
+const TRAVEL_START = 118
 const traveler = useTemplateRef<HTMLElement>('traveler')
 const logoScene = useTemplateRef<LogoSceneInstance>('logoScene')
 
-let heroAnchor: HTMLElement | null = null
+let wordmarkAnchor: HTMLElement | null = null
 let productDock: HTMLElement | null = null
 let productHeading: HTMLElement | null = null
-let heroSection: HTMLElement | null = null
 let resizeObserver: ResizeObserver | null = null
 let scrollFrame = 0
+let settleUntil = 0
+let isMounted = false
 let lastRenderEnabled = true
+let dockedSince = 0
 
 const clamp = (value: number, min = 0, max = 1) => Math.min(max, Math.max(min, value))
 const lerp = (start: number, end: number, progress: number) => start + (end - start) * progress
@@ -39,20 +46,20 @@ const smoothstep = (progress: number) => {
   return value * value * (3 - 2 * value)
 }
 
+const getResponsiveMotion = () => {
+  if (window.innerWidth < 768) {
+    return { rangeFactor: 0.92, curveY: -12, curveX: 0 }
+  }
+  if (window.innerWidth < 1100) {
+    return { rangeFactor: 0.88, curveY: -36, curveX: 48 }
+  }
+  return { rangeFactor: 0.84, curveY: -60, curveX: 96 }
+}
+
 const setSceneRendering = (enabled: boolean) => {
   if (enabled === lastRenderEnabled) return
   lastRenderEnabled = enabled
   logoScene.value?.setRenderEnabled(enabled)
-}
-
-const getResponsiveMotion = () => {
-  if (window.innerWidth < 768) {
-    return { rangeFactor: 0.92, curveY: 6, curveX: 0, rotationY: 48, rotationFactor: 0.3 }
-  }
-  if (window.innerWidth < 1100) {
-    return { rangeFactor: 0.88, curveY: 14, curveX: 8, rotationY: 114, rotationFactor: 0.6 }
-  }
-  return { rangeFactor: 0.84, curveY: 22, curveX: 18, rotationY: 190, rotationFactor: 1 }
 }
 
 const getSettleScale = (progress: number) => {
@@ -65,119 +72,110 @@ const getSettleScale = (progress: number) => {
   return lerp(0.99, 1, smoothstep((settleProgress - 0.72) / 0.28))
 }
 
-const updateRotation = (progress: number, rotationYDegrees: number, rotationFactor: number) => {
+const updateRotation = (progress: number) => {
   const controls = logoScene.value?.controls
   if (!controls) return
 
-  const peakX = HERO_ROTATION.x + (14 * Math.PI * rotationFactor) / 180
-  const peakY = HERO_ROTATION.y + (rotationYDegrees * Math.PI) / 180
-  let rotationX = HERO_ROTATION.x
-  let rotationY = HERO_ROTATION.y
+  const rotationProgress = smoothstep(progress)
+  const finalRotationY = DOCK_ROTATION.y + Math.PI * 2 * SPIN_TURNS
+  const rotationX =
+    lerp(HERO_ROTATION.x, DOCK_ROTATION.x, rotationProgress) + Math.sin(Math.PI * progress) * 0.16
+  const rotationY = lerp(HERO_ROTATION.y, finalRotationY, rotationProgress)
+  const rotationZ = Math.sin(Math.PI * progress) * 0.07
 
-  if (progress <= 0.65) {
-    const rotationProgress = smoothstep(progress / 0.65)
-    rotationX = lerp(HERO_ROTATION.x, peakX, rotationProgress)
-    rotationY = lerp(HERO_ROTATION.y, peakY, rotationProgress)
-  } else {
-    const faceProgress = smoothstep((progress - 0.65) / 0.35)
-    rotationX = lerp(peakX, DOCK_ROTATION.x, faceProgress)
-    rotationY = lerp(peakY, DOCK_ROTATION.y, faceProgress)
-  }
-
-  const heroTiltZ = HERO_TILT_Z * (1 - smoothstep(progress / 0.35))
-  controls.setRotation(rotationX, rotationY, heroTiltZ + Math.sin(Math.PI * progress) * 0.025)
+  controls.setRotation(rotationX, rotationY, rotationZ)
   controls.setTravelProgress(progress)
-}
-
-const updateReducedMotion = (
-  progress: number,
-  anchorRect: DOMRect,
-  startScale: number,
-  headingRect: DOMRect,
-) => {
-  const travelerElement = traveler.value
-  const scene = logoScene.value
-  if (!travelerElement || !scene) return
-
-  const opacity = 1 - smoothstep((progress - 0.25) / 0.37)
-  const centerX = anchorRect.left + anchorRect.width / 2
-  const centerY = anchorRect.top + anchorRect.height / 2
-  travelerElement.style.transform = `translate3d(${centerX - TRAVELER_SIZE / 2}px, ${centerY - TRAVELER_SIZE / 2}px, 0) scale(${startScale})`
-  travelerElement.style.opacity = `${opacity}`
-  travelerElement.style.visibility = opacity <= 0.01 ? 'hidden' : 'visible'
-  travelerElement.dataset.logoTravelState = opacity <= 0.01 ? 'reduced-hidden' : 'reduced-hero'
-  travelerElement.dataset.logoTravelProgress = progress.toFixed(4)
-  scene.controls.setRotation(HERO_ROTATION.x, HERO_ROTATION.y, HERO_TILT_Z)
-  scene.controls.setTravelProgress(0)
-  scene.setPointerNormalized(0, 0)
-  setSceneRendering(opacity > 0.01 && headingRect.bottom > 0)
-  heroSection?.style.setProperty('--hero-logo-field-opacity', `${opacity}`)
 }
 
 const updateTraveler = () => {
   const travelerElement = traveler.value
   const scene = logoScene.value
-  if (!travelerElement || !scene || !heroAnchor || !productDock || !productHeading) return
-
-  const anchorRect = heroAnchor.getBoundingClientRect()
-  const dockRect = productDock.getBoundingClientRect()
-  const headingRect = productHeading.getBoundingClientRect()
-  const anchorDocumentY = anchorRect.top + window.scrollY + anchorRect.height / 2
-  const dockDocumentY = dockRect.top + window.scrollY + dockRect.height / 2
-  const heroTop = heroSection?.getBoundingClientRect().top ?? 0
-  const heroDocumentTop = heroTop + window.scrollY
-  const travelStart = Math.max(0, anchorDocumentY - anchorRect.height / 2 - heroDocumentTop)
-  const responsiveMotion = getResponsiveMotion()
-  const travelRange = Math.max(1, (dockDocumentY - anchorDocumentY) * responsiveMotion.rangeFactor)
-  const progress = clamp((window.scrollY - travelStart) / travelRange)
-  const startScale = anchorRect.width / TRAVELER_SIZE
-  const dockScale = dockRect.width / TRAVELER_SIZE
-
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    updateReducedMotion(progress, anchorRect, startScale, headingRect)
+  if (!travelerElement || !scene || !wordmarkAnchor || !productDock || !productHeading) {
     return
   }
+
+  const anchorRect = wordmarkAnchor.getBoundingClientRect()
+  const dockRect = productDock.getBoundingClientRect()
+  const headingRect = productHeading.getBoundingClientRect()
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  const anchorDocumentY = anchorRect.top + window.scrollY + anchorRect.height / 2
+  const dockDocumentY = dockRect.top + window.scrollY + dockRect.height / 2
+  const responsiveMotion = getResponsiveMotion()
+  const travelRange = Math.max(1, (dockDocumentY - anchorDocumentY) * responsiveMotion.rangeFactor)
+  const progress = clamp((window.scrollY - TRAVEL_START) / travelRange)
+  const motionProgress = reducedMotion ? 0 : progress
+  const collapseProgress = reducedMotion
+    ? 0
+    : clamp((window.scrollY - COLLAPSE_START) / (COLLAPSE_END - COLLAPSE_START))
+  const collapseEase = smoothstep(collapseProgress)
+  const revealProgress = reducedMotion
+    ? 0
+    : smoothstep((window.scrollY - SYMBOL_REVEAL_START) / (SYMBOL_REVEAL_END - SYMBOL_REVEAL_START))
+  const textFadeProgress = smoothstep((collapseProgress - 0.38) / 0.52)
+  const coreProgress = Math.sin(Math.PI * collapseProgress)
+  wordmarkAnchor.style.setProperty('--hero-wordmark-scale-x', `${lerp(1, 0.12, collapseEase)}`)
+  wordmarkAnchor.style.setProperty('--hero-wordmark-scale-y', `${lerp(1, 0.82, collapseEase)}`)
+  wordmarkAnchor.style.setProperty('--hero-wordmark-opacity', `${1 - textFadeProgress}`)
+  wordmarkAnchor.style.setProperty('--hero-wordmark-blur', `${lerp(0, 5, collapseEase)}px`)
+  wordmarkAnchor.style.setProperty(
+    '--hero-wordmark-core-opacity',
+    `${coreProgress * (1 - revealProgress * 0.55)}`,
+  )
+  wordmarkAnchor.style.setProperty(
+    '--hero-wordmark-core-scale',
+    `${lerp(0.72, 1.12, coreProgress)}`,
+  )
+
+  const startScale = HERO_SYMBOL_SIZE / TRAVELER_SIZE
+  const dockScale = dockRect.width / TRAVELER_SIZE
 
   const startCenterX = anchorRect.left + anchorRect.width / 2
   const startCenterY = anchorRect.top + anchorRect.height / 2
   const targetCenterX = dockRect.left + dockRect.width / 2
   const targetCenterY = dockRect.top + dockRect.height / 2
-  const curveProgress = Math.sin(Math.PI * progress)
+  const curveProgress = Math.sin(Math.PI * motionProgress)
   const direction = targetCenterX < startCenterX ? -1 : 1
   const centerX =
-    lerp(startCenterX, targetCenterX, progress) +
+    lerp(startCenterX, targetCenterX, motionProgress) +
     curveProgress * responsiveMotion.curveX * direction
   const centerY =
-    lerp(startCenterY, targetCenterY, progress) + curveProgress * responsiveMotion.curveY
-  const scale =
-    (progress <= 0.55
-      ? lerp(startScale, startScale * 0.58, smoothstep(progress / 0.55))
-      : lerp(startScale * 0.58, dockScale, smoothstep((progress - 0.55) / 0.45))) *
-    getSettleScale(progress)
+    lerp(startCenterY, targetCenterY, motionProgress) + curveProgress * responsiveMotion.curveY
+  const travelScale =
+    (motionProgress <= 0.55
+      ? lerp(startScale, startScale * 0.82, smoothstep(motionProgress / 0.55))
+      : lerp(startScale * 0.82, dockScale, smoothstep((motionProgress - 0.55) / 0.45))) *
+    getSettleScale(motionProgress)
+  const scale = travelScale
   const headingHasLeft = progress >= 1 && headingRect.bottom <= 0
 
   travelerElement.style.transform = `translate3d(${centerX - TRAVELER_SIZE / 2}px, ${centerY - TRAVELER_SIZE / 2}px, 0) scale(${scale})`
-  travelerElement.style.opacity = headingHasLeft ? '0' : '1'
-  travelerElement.style.visibility = headingHasLeft ? 'hidden' : 'visible'
-  travelerElement.dataset.logoTravelProgress = progress.toFixed(4)
+  travelerElement.style.opacity = headingHasLeft ? '0' : `${revealProgress}`
+  travelerElement.style.visibility = headingHasLeft || revealProgress <= 0.01 ? 'hidden' : 'visible'
+  travelerElement.dataset.logoTravelProgress = motionProgress.toFixed(4)
   travelerElement.dataset.logoTravelState = headingHasLeft
     ? 'hidden'
-    : progress >= 1
-      ? 'docked'
-      : progress > 0
-        ? 'traveling'
-        : 'hero'
+    : reducedMotion
+      ? 'reduced-hidden'
+      : progress >= 1
+        ? 'docked'
+        : progress > 0
+          ? 'traveling'
+          : revealProgress > 0
+            ? 'handoff'
+            : 'wordmark'
 
-  updateRotation(progress, responsiveMotion.rotationY, responsiveMotion.rotationFactor)
-  setSceneRendering(!headingHasLeft)
+  updateRotation(motionProgress)
 
-  if (progress > 0 && !headingHasLeft) scheduleUpdate()
-
-  if (heroSection) {
-    const ambientWeight = 1 - progress * 0.6
-    heroSection.style.setProperty('--hero-ambient-from-opacity', `${0.65 * ambientWeight}`)
-    heroSection.style.setProperty('--hero-ambient-to-opacity', `${ambientWeight}`)
-    heroSection.style.setProperty('--hero-logo-field-opacity', `${1 - progress}`)
+  if (headingHasLeft || revealProgress <= 0.01) {
+    dockedSince = 0
+    setSceneRendering(false)
+  } else if (progress < 1) {
+    dockedSince = 0
+    setSceneRendering(true)
+  } else {
+    if (!dockedSince) dockedSince = performance.now()
+    setSceneRendering(performance.now() - dockedSince < 180)
   }
 }
 
@@ -186,46 +184,39 @@ function scheduleUpdate() {
   scrollFrame = window.requestAnimationFrame(() => {
     scrollFrame = 0
     updateTraveler()
+    if (performance.now() < settleUntil) scheduleUpdate()
   })
 }
 
-const handlePointerMove = (event: PointerEvent) => {
-  if (
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
-    !window.matchMedia('(hover: hover) and (pointer: fine)').matches
-  ) {
-    return
-  }
-  logoScene.value?.setPointerNormalized(
-    clamp((event.clientX / window.innerWidth) * 2 - 1, -1, 1),
-    clamp((event.clientY / window.innerHeight) * 2 - 1, -1, 1),
-  )
+const requestSettledUpdate = () => {
+  if (!isMounted) return
+  settleUntil = performance.now() + 900
+  scheduleUpdate()
 }
 
 onMounted(async () => {
+  isMounted = true
   await nextTick()
-  heroAnchor = document.querySelector<HTMLElement>('#hero-logo-anchor')
+  wordmarkAnchor = document.querySelector<HTMLElement>('#hero-logo-anchor')
   productDock = document.querySelector<HTMLElement>('#product-logo-dock')
   productHeading = document.querySelector<HTMLElement>('#product-environment-title')
-  heroSection = document.querySelector<HTMLElement>('.hero-section')
 
-  if (!heroAnchor || !productDock || !productHeading) return
-  resizeObserver = new ResizeObserver(scheduleUpdate)
-  resizeObserver.observe(heroAnchor)
+  if (!wordmarkAnchor || !productDock || !productHeading) return
+  resizeObserver = new ResizeObserver(requestSettledUpdate)
+  resizeObserver.observe(wordmarkAnchor)
   resizeObserver.observe(productDock)
   resizeObserver.observe(productHeading)
-  window.addEventListener('scroll', scheduleUpdate, { passive: true })
-  window.addEventListener('resize', scheduleUpdate, { passive: true })
-  window.addEventListener('pointermove', handlePointerMove, { passive: true })
-  document.fonts.ready.then(scheduleUpdate)
-  scheduleUpdate()
+  window.addEventListener('scroll', requestSettledUpdate, { passive: true })
+  window.addEventListener('resize', requestSettledUpdate, { passive: true })
+  document.fonts.ready.then(requestSettledUpdate)
+  requestSettledUpdate()
 })
 
 onBeforeUnmount(() => {
+  isMounted = false
   resizeObserver?.disconnect()
-  window.removeEventListener('scroll', scheduleUpdate)
-  window.removeEventListener('resize', scheduleUpdate)
-  window.removeEventListener('pointermove', handlePointerMove)
+  window.removeEventListener('scroll', requestSettledUpdate)
+  window.removeEventListener('resize', requestSettledUpdate)
   if (scrollFrame) window.cancelAnimationFrame(scrollFrame)
 })
 </script>
@@ -242,6 +233,7 @@ onBeforeUnmount(() => {
   pointer-events: none;
   transform: translate3d(-220px, -220px, 0);
   transform-origin: center;
+  transition: opacity 240ms ease-out;
   will-change: transform, opacity;
 }
 

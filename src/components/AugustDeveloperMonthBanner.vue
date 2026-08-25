@@ -3,7 +3,9 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { AUGUST_DEVELOPER_MONTH_PATH } from '@/views/operation/constants'
 
-defineOptions({ name: 'AugustDeveloperMonthBanner' })
+defineOptions({
+  name: 'AugustDeveloperMonthBanner',
+})
 
 interface Props {
   embedded?: boolean

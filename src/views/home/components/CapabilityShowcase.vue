@@ -57,46 +57,72 @@
                   :class="`panel-visual-${activeCapability.key}`"
                   aria-hidden="true"
                 >
-                  <div v-if="activeCapability.key === 'collaboration'" class="collaboration-motion">
-                    <i v-for="index in 4" :key="`link-${index}`"></i>
-                    <span v-for="index in 5" :key="`node-${index}`"></span>
-                    <b></b>
-                  </div>
-                  <div v-else-if="activeCapability.key === 'agents'" class="agent-motion">
-                    <span v-for="index in 3" :key="index"></span>
-                    <i v-for="index in 3" :key="`signal-${index}`"></i>
-                    <b></b>
-                  </div>
                   <video
-                    v-else-if="activeCapability.key === 'knowledge'"
-                    class="knowledge-demo"
-                    :src="knowledgeGraphDemo"
-                    autoplay
+                    v-if="activeCapability.key === 'collaboration'"
+                    ref="panelVideo"
+                    class="collaboration-demo"
+                    :src="isCapabilityNearViewport ? collaborationWorkflowDemo : undefined"
+                    :autoplay="isCapabilityNearViewport"
                     loop
                     muted
                     playsinline
-                    preload="metadata"
+                    preload="none"
                   ></video>
-                  <div v-else-if="activeCapability.key === 'security'" class="security-motion">
-                    <i></i>
-                    <span v-for="index in 4" :key="index"></span>
-                  </div>
-                  <svg v-else class="analytics-motion" viewBox="0 0 520 200" focusable="false">
-                    <defs>
-                      <linearGradient id="analytics-line" x1="0" x2="1">
-                        <stop stop-color="#37c7e8" stop-opacity="0.08" />
-                        <stop offset="0.72" stop-color="#7ea7ff" stop-opacity="0.72" />
-                        <stop offset="1" stop-color="#d8f4ff" stop-opacity="0.96" />
-                      </linearGradient>
-                    </defs>
-                    <path class="analytics-grid" d="M18 42 H502 M18 84 H502 M18 126 H502 M18 168 H502" />
-                    <path class="analytics-area" d="M20 164 C84 150 108 112 168 124 S264 72 324 90 S420 36 500 48 V184 H20 Z" />
-                    <path class="analytics-line" d="M20 164 C84 150 108 112 168 124 S264 72 324 90 S420 36 500 48" />
-                    <circle cx="168" cy="124" r="4" />
-                    <circle cx="324" cy="90" r="4" />
-                    <circle cx="500" cy="48" r="5" />
-                  </svg>
+                  <video
+                    v-else-if="activeCapability.key === 'agents'"
+                    ref="panelVideo"
+                    class="skill-marketplace-demo"
+                    :src="isCapabilityNearViewport ? skillMarketplaceDemo : undefined"
+                    :autoplay="isCapabilityNearViewport"
+                    loop
+                    muted
+                    playsinline
+                    preload="none"
+                  ></video>
+                  <video
+                    v-else-if="activeCapability.key === 'knowledge'"
+                    ref="panelVideo"
+                    class="knowledge-demo"
+                    :src="isCapabilityNearViewport ? knowledgeGraphDemo : undefined"
+                    :autoplay="isCapabilityNearViewport"
+                    loop
+                    muted
+                    playsinline
+                    preload="none"
+                  ></video>
+                  <video
+                    v-else-if="activeCapability.key === 'security'"
+                    ref="panelVideo"
+                    class="security-scan-demo"
+                    :src="isCapabilityNearViewport ? securityScanDemo : undefined"
+                    :autoplay="isCapabilityNearViewport"
+                    loop
+                    muted
+                    playsinline
+                    preload="none"
+                  ></video>
+                  <video
+                    v-else
+                    ref="panelVideo"
+                    class="analytics-demo"
+                    :src="isCapabilityNearViewport ? analyticsDashboardDemo : undefined"
+                    :autoplay="isCapabilityNearViewport"
+                    loop
+                    muted
+                    playsinline
+                    preload="none"
+                  ></video>
                 </div>
+
+                <button
+                  class="panel-expand"
+                  type="button"
+                  :aria-label="t('home.redesign.capabilities.expandVideo')"
+                  :title="t('home.redesign.capabilities.expandVideo')"
+                  @click="openExpandedVideo"
+                >
+                  <span aria-hidden="true">⛶</span>
+                </button>
 
                 <div class="panel-copy">
                   <h3>{{ activeCapability.title }}</h3>
@@ -109,19 +135,62 @@
       </div>
     </div>
   </section>
+
+  <Teleport to="body">
+    <Transition name="video-viewer">
+      <div v-if="isVideoExpanded" class="video-viewer-backdrop" @click.self="closeExpandedVideo">
+        <div
+          ref="videoViewerDialog"
+          class="video-viewer-dialog"
+          role="dialog"
+          aria-modal="true"
+          :aria-label="expandedVideoTitle"
+        >
+          <video
+            ref="expandedVideo"
+            class="video-viewer-media"
+            :src="expandedVideoSource"
+            autoplay
+            loop
+            muted
+            controls
+            playsinline
+            preload="auto"
+            tabindex="0"
+            @loadedmetadata="startExpandedPlayback"
+          ></video>
+
+          <button
+            ref="videoViewerClose"
+            class="video-viewer-close"
+            type="button"
+            :aria-label="t('home.redesign.capabilities.collapseVideo')"
+            :title="t('home.redesign.capabilities.collapseVideo')"
+            @click="closeExpandedVideo"
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+      </div>
+    </Transition>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
+import analyticsDashboardDemo from '@/assets/video/analytics-dashboard-demo.mp4'
+import collaborationWorkflowDemo from '@/assets/video/collaboration-workflow-demo.mp4'
 import knowledgeGraphDemo from '@/assets/video/knowledge-graph-demo.mp4'
+import securityScanDemo from '@/assets/video/security-scan-demo.mp4'
+import skillMarketplaceDemo from '@/assets/video/skill-marketplace-demo.mp4'
 
 defineOptions({
   name: 'CapabilityShowcase',
 })
 
 interface Capability {
-  key: string
+  key: CapabilityKey
   label: string
   title: string
   description: string
@@ -129,13 +198,34 @@ interface Capability {
 
 const { t } = useI18n()
 const capabilitySection = useTemplateRef<HTMLElement>('capabilitySection')
+const panelVideo = useTemplateRef<HTMLVideoElement>('panelVideo')
+const expandedVideo = useTemplateRef<HTMLVideoElement>('expandedVideo')
+const videoViewerDialog = useTemplateRef<HTMLElement>('videoViewerDialog')
+const videoViewerClose = useTemplateRef<HTMLButtonElement>('videoViewerClose')
 const activeIndex = ref(0)
 const storyProgress = ref(0)
 const activeSegmentProgress = ref(0)
 const isScrollStoryEnabled = ref(false)
+const isCapabilityNearViewport = ref(false)
+const isVideoExpanded = ref(false)
+const expandedVideoSource = ref('')
+const expandedVideoTitle = ref('')
 let scrollFrame = 0
+let expandedStartTime = 0
+let viewerTrigger: HTMLElement | null = null
+let expandedInlineVideo: HTMLVideoElement | null = null
+let originalBodyOverflow = ''
+let capabilityLoadObserver: IntersectionObserver | null = null
 
 const capabilityKeys = ['collaboration', 'agents', 'knowledge', 'security', 'analytics'] as const
+type CapabilityKey = (typeof capabilityKeys)[number]
+const capabilityVideoSources: Record<CapabilityKey, string> = {
+  collaboration: collaborationWorkflowDemo,
+  agents: skillMarketplaceDemo,
+  knowledge: knowledgeGraphDemo,
+  security: securityScanDemo,
+  analytics: analyticsDashboardDemo,
+}
 const capabilities = computed<Capability[]>(() =>
   capabilityKeys.map((key) => ({
     key,
@@ -172,7 +262,7 @@ const updateStoryMode = () => {
 
 const updateScrollStory = () => {
   const section = capabilitySection.value
-  if (!section || !isScrollStoryEnabled.value) return
+  if (!section || !isScrollStoryEnabled.value || isVideoExpanded.value) return
 
   const sectionTop = window.scrollY + section.getBoundingClientRect().top
   const scrollDistance = Math.max(1, section.offsetHeight - window.innerHeight)
@@ -241,16 +331,114 @@ const selectCapability = (index: number) => {
   })
 }
 
+const startExpandedPlayback = () => {
+  const video = expandedVideo.value
+  if (!video) return
+
+  if (Number.isFinite(expandedStartTime)) {
+    video.currentTime = Math.min(expandedStartTime, video.duration || expandedStartTime)
+  }
+  void video.play().catch((error) => {
+    console.warn('Capability video viewer could not start', error)
+  })
+}
+
+const openExpandedVideo = async (event: MouseEvent) => {
+  const trigger = event.currentTarget instanceof HTMLElement ? event.currentTarget : null
+  const inlineVideo =
+    trigger?.closest('.panel-frame')?.querySelector<HTMLVideoElement>('video') ?? panelVideo.value
+  expandedStartTime = inlineVideo?.currentTime ?? 0
+  expandedVideoSource.value =
+    inlineVideo?.currentSrc || capabilityVideoSources[activeCapability.value.key]
+  expandedVideoTitle.value = activeCapability.value.title
+  inlineVideo?.pause()
+  expandedInlineVideo = inlineVideo
+  viewerTrigger = trigger
+  originalBodyOverflow = document.body.style.overflow
+  isVideoExpanded.value = true
+  document.body.style.overflow = 'hidden'
+
+  await nextTick()
+  videoViewerClose.value?.focus()
+}
+
+const closeExpandedVideo = async () => {
+  if (!isVideoExpanded.value) return
+
+  const viewerVideo = expandedVideo.value
+  const resumeTime = viewerVideo?.currentTime ?? expandedStartTime
+  viewerVideo?.pause()
+  isVideoExpanded.value = false
+  document.body.style.overflow = originalBodyOverflow
+
+  await nextTick()
+  const inlineVideo = expandedInlineVideo?.isConnected ? expandedInlineVideo : panelVideo.value
+  if (inlineVideo && Number.isFinite(resumeTime)) {
+    inlineVideo.currentTime = Math.min(resumeTime, inlineVideo.duration || resumeTime)
+    void inlineVideo.play().catch((error) => {
+      console.warn('Capability panel video could not resume', error)
+    })
+  }
+  viewerTrigger?.focus()
+  expandedInlineVideo = null
+  viewerTrigger = null
+}
+
+const handleViewerKeydown = (event: KeyboardEvent) => {
+  if (!isVideoExpanded.value) return
+
+  if (event.key === 'Escape') {
+    event.preventDefault()
+    void closeExpandedVideo()
+    return
+  }
+
+  if (event.key !== 'Tab') return
+  const focusableElements = [expandedVideo.value, videoViewerClose.value].filter(
+    (element): element is HTMLVideoElement | HTMLButtonElement => element !== null,
+  )
+  if (!focusableElements.length || !videoViewerDialog.value) return
+
+  const firstElement = focusableElements[0]!
+  const lastElement = focusableElements[focusableElements.length - 1]!
+  if (event.shiftKey && document.activeElement === firstElement) {
+    event.preventDefault()
+    lastElement.focus()
+  } else if (!event.shiftKey && document.activeElement === lastElement) {
+    event.preventDefault()
+    firstElement.focus()
+  }
+}
+
 onMounted(() => {
   updateStoryMode()
   updateScrollStory()
+  const section = capabilitySection.value
+  if (!section || !('IntersectionObserver' in window)) {
+    isCapabilityNearViewport.value = true
+  } else {
+    capabilityLoadObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return
+        isCapabilityNearViewport.value = true
+        capabilityLoadObserver?.disconnect()
+        capabilityLoadObserver = null
+      },
+      { rootMargin: '360px 0px', threshold: 0 },
+    )
+    capabilityLoadObserver.observe(section)
+  }
   window.addEventListener('scroll', handleScroll, { passive: true })
   window.addEventListener('resize', handleViewportChange, { passive: true })
+  document.addEventListener('keydown', handleViewerKeydown)
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', handleScroll)
   window.removeEventListener('resize', handleViewportChange)
+  document.removeEventListener('keydown', handleViewerKeydown)
+  capabilityLoadObserver?.disconnect()
+  if (isVideoExpanded.value) document.body.style.overflow = originalBodyOverflow
   if (scrollFrame) window.cancelAnimationFrame(scrollFrame)
 })
 </script>
@@ -464,6 +652,50 @@ onBeforeUnmount(() => {
   transform: translateY(-4%);
 }
 
+.panel-expand {
+  position: absolute;
+  z-index: 3;
+  top: 16px;
+  right: 16px;
+  display: grid;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  background: rgba(5, 7, 11, 0.76);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition:
+    filter 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease,
+    transform 100ms ease;
+
+  span {
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.24);
+    background: rgba(12, 16, 22, 0.86);
+    filter: brightness(1.15);
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.84);
+    outline-offset: 2px;
+  }
+}
+
 .panel-copy {
   position: absolute;
   z-index: 2;
@@ -513,6 +745,102 @@ onBeforeUnmount(() => {
 .capability-panel-leave-to {
   opacity: 0;
   transform: translateY(-5px);
+}
+
+.video-viewer-backdrop {
+  position: fixed;
+  z-index: 2000;
+  inset: 0;
+  display: grid;
+  box-sizing: border-box;
+  padding: 24px;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.86);
+  backdrop-filter: blur(10px);
+}
+
+.video-viewer-dialog {
+  position: relative;
+  width: min(92vw, 1440px);
+  height: min(84vh, 810px);
+  overflow: visible;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: #000;
+  box-shadow: 0 32px 96px rgba(0, 0, 0, 0.52);
+}
+
+.video-viewer-media {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: contain;
+  background: #000;
+}
+
+.video-viewer-close {
+  position: absolute;
+  z-index: 2;
+  top: -52px;
+  right: 0;
+  display: grid;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  background: rgba(5, 7, 11, 0.82);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition:
+    filter 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease,
+    transform 100ms ease;
+
+  span {
+    font-size: 28px;
+    font-weight: 300;
+    line-height: 1;
+    transform: translateY(-1px);
+  }
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.28);
+    background: rgba(16, 20, 26, 0.92);
+    filter: brightness(1.15);
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.88);
+    outline-offset: 2px;
+  }
+}
+
+.video-viewer-enter-active,
+.video-viewer-leave-active {
+  transition: opacity 180ms ease;
+
+  .video-viewer-dialog {
+    transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+.video-viewer-enter-from,
+.video-viewer-leave-to {
+  opacity: 0;
+
+  .video-viewer-dialog {
+    transform: scale(0.985);
+  }
 }
 
 .collaboration-motion {
@@ -569,7 +897,9 @@ onBeforeUnmount(() => {
     border-radius: 50%;
     border: 1px solid rgba(172, 217, 255, 0.45);
     background: #0b1119;
-    box-shadow: 0 0 0 6px rgba(55, 199, 232, 0.035), 0 0 22px rgba(55, 199, 232, 0.18);
+    box-shadow:
+      0 0 0 6px rgba(55, 199, 232, 0.035),
+      0 0 22px rgba(55, 199, 232, 0.18);
 
     &::after {
       position: absolute;
@@ -617,7 +947,12 @@ onBeforeUnmount(() => {
     height: 44px;
     border: 1px solid rgba(179, 228, 255, 0.72);
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(179, 228, 255, 0.36), rgba(55, 199, 232, 0.08) 42%, transparent 72%);
+    background: radial-gradient(
+      circle,
+      rgba(179, 228, 255, 0.36),
+      rgba(55, 199, 232, 0.08) 42%,
+      transparent 72%
+    );
     box-shadow: 0 0 46px rgba(55, 199, 232, 0.28);
     animation: capability-pulse 4.6s ease-in-out infinite;
   }
@@ -670,7 +1005,12 @@ onBeforeUnmount(() => {
     width: 34%;
     height: 4px;
     border-radius: 4px;
-    background: linear-gradient(90deg, rgba(55, 199, 232, 0.1), rgba(129, 167, 255, 0.85), transparent);
+    background: linear-gradient(
+      90deg,
+      rgba(55, 199, 232, 0.1),
+      rgba(129, 167, 255, 0.85),
+      transparent
+    );
     box-shadow: 0 0 18px rgba(126, 167, 255, 0.24);
 
     &:nth-of-type(1) {
@@ -696,7 +1036,9 @@ onBeforeUnmount(() => {
     height: 12px;
     border-radius: 50%;
     background: #d8f4ff;
-    box-shadow: 0 0 0 5px rgba(55, 199, 232, 0.12), 0 0 22px rgba(55, 199, 232, 0.58);
+    box-shadow:
+      0 0 0 5px rgba(55, 199, 232, 0.12),
+      0 0 22px rgba(55, 199, 232, 0.58);
     animation: agent-signal 5.2s ease-in-out infinite;
   }
 }
@@ -816,7 +1158,11 @@ onBeforeUnmount(() => {
   }
 }
 
-.panel-visual-knowledge {
+.panel-visual-collaboration,
+.panel-visual-knowledge,
+.panel-visual-security,
+.panel-visual-analytics,
+.panel-visual-agents {
   transform: none;
   background: #080a0f;
 
@@ -837,14 +1183,37 @@ onBeforeUnmount(() => {
   }
 }
 
-.knowledge-demo {
+.collaboration-demo,
+.knowledge-demo,
+.security-scan-demo,
+.analytics-demo,
+.skill-marketplace-demo {
   position: relative;
   z-index: 0;
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.collaboration-demo {
+  object-position: center 48%;
+}
+
+.knowledge-demo {
   object-position: center 42%;
+}
+
+.security-scan-demo {
+  object-position: center 42%;
+}
+
+.analytics-demo {
+  object-position: center 38%;
+}
+
+.skill-marketplace-demo {
+  object-position: center top;
 }
 
 .security-motion {
@@ -1033,6 +1402,12 @@ onBeforeUnmount(() => {
     grid-auto-flow: column;
     justify-content: start;
     overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   .capability-tab {
@@ -1090,12 +1465,37 @@ onBeforeUnmount(() => {
     bottom: 28px;
     left: 24px;
   }
+
+  .panel-expand {
+    top: 12px;
+    right: 12px;
+  }
+
+  .video-viewer-backdrop {
+    padding: 12px;
+  }
+
+  .video-viewer-dialog {
+    width: calc(100vw - 24px);
+    height: auto;
+    max-height: 76vh;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+  }
+
+  .video-viewer-close {
+    top: -50px;
+    right: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .capability-tab::before,
   .capability-panel-enter-active,
-  .capability-panel-leave-active {
+  .capability-panel-leave-active,
+  .video-viewer-enter-active,
+  .video-viewer-leave-active,
+  .video-viewer-dialog {
     transition: none;
   }
 }

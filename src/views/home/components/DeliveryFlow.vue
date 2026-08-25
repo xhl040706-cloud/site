@@ -11,7 +11,7 @@
     @pointercancel="handlePointerUp"
   >
     <div class="delivery-flow-ambient">
-      <img :src="deliveryAmbient" alt="" draggable="false" />
+      <img :src="deliveryAmbient" alt="" loading="lazy" decoding="async" draggable="false" />
     </div>
 
     <article
@@ -26,6 +26,8 @@
         class="delivery-stage-art"
         :src="stage.asset"
         alt=""
+        loading="lazy"
+        decoding="async"
         draggable="false"
       />
       <span class="delivery-stage-index">0{{ index + 1 }}</span>
@@ -89,11 +91,16 @@
 import { computed, onBeforeUnmount, ref, type CSSProperties, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import deliveryAmbient from '@/assets/home/redesign/s5-delivery-ambient.svg'
-import requirementCard from '@/assets/home/redesign/s5-delivery-requirement.svg'
-import solutionCard from '@/assets/home/redesign/s5-delivery-solution.webp'
-import taskBreakdownCard from '@/assets/home/redesign/s5-delivery-task-breakdown.webp'
-import tddCard from '@/assets/home/redesign/s5-delivery-tdd.webp'
-import validationCard from '@/assets/home/redesign/s5-delivery-validation.webp'
+import requirementCardEn from '@/assets/home/redesign/s5-delivery-requirement-en.webp'
+import requirementCardZh from '@/assets/home/redesign/s5-delivery-requirement.svg'
+import solutionCardEn from '@/assets/home/redesign/s5-delivery-solution-en.webp'
+import solutionCardZh from '@/assets/home/redesign/s5-delivery-solution.webp'
+import taskBreakdownCardEn from '@/assets/home/redesign/s5-delivery-task-breakdown-en.webp'
+import taskBreakdownCardZh from '@/assets/home/redesign/s5-delivery-task-breakdown.webp'
+import tddCardEn from '@/assets/home/redesign/s5-delivery-tdd-en.webp'
+import tddCardZh from '@/assets/home/redesign/s5-delivery-tdd.webp'
+import validationCardEn from '@/assets/home/redesign/s5-delivery-validation-en.webp'
+import validationCardZh from '@/assets/home/redesign/s5-delivery-validation.webp'
 
 interface Props {
   active?: boolean
@@ -108,6 +115,7 @@ type StagePositionStyle = CSSProperties & {
 type DeliveryFlowStyle = CSSProperties & { '--delivery-drag-offset': string }
 
 type StageKey = 'requirement' | 'solution' | 'taskBreakdown' | 'tdd' | 'validation'
+type DeliveryLocale = 'zh' | 'en'
 
 interface DeliveryStage {
   key: StageKey
@@ -127,15 +135,32 @@ defineOptions({
   name: 'DeliveryFlow',
 })
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const stageKeys = ['requirement', 'solution', 'taskBreakdown', 'tdd', 'validation'] as const
-const stageMeta: Record<StageKey, Pick<DeliveryStage, 'initial' | 'visual' | 'asset'>> = {
-  requirement: { initial: 'P', visual: 'document', asset: requirementCard },
-  solution: { initial: 'A', visual: 'architecture', asset: solutionCard },
-  taskBreakdown: { initial: 'P', visual: 'document', asset: taskBreakdownCard },
-  tdd: { initial: 'D', visual: 'tdd', asset: tddCard },
-  validation: { initial: 'D', visual: 'validation', asset: validationCard },
+const stageMeta: Record<StageKey, Pick<DeliveryStage, 'initial' | 'visual'>> = {
+  requirement: { initial: 'P', visual: 'document' },
+  solution: { initial: 'A', visual: 'architecture' },
+  taskBreakdown: { initial: 'P', visual: 'document' },
+  tdd: { initial: 'D', visual: 'tdd' },
+  validation: { initial: 'D', visual: 'validation' },
 }
+const stageAssets: Record<DeliveryLocale, Record<StageKey, string>> = {
+  zh: {
+    requirement: requirementCardZh,
+    solution: solutionCardZh,
+    taskBreakdown: taskBreakdownCardZh,
+    tdd: tddCardZh,
+    validation: validationCardZh,
+  },
+  en: {
+    requirement: requirementCardEn,
+    solution: solutionCardEn,
+    taskBreakdown: taskBreakdownCardEn,
+    tdd: tddCardEn,
+    validation: validationCardEn,
+  },
+}
+const deliveryLocale = computed<DeliveryLocale>(() => (locale.value === 'en' ? 'en' : 'zh'))
 
 const common = computed(() => ({
   executor: t('home.redesign.value.deliveryFlow.common.executor'),
@@ -150,6 +175,7 @@ const stages = computed<DeliveryStage[]>(() =>
     title: t(`home.redesign.value.deliveryFlow.stages.${key}.title`),
     description: t(`home.redesign.value.deliveryFlow.stages.${key}.description`),
     executor: t(`home.redesign.value.deliveryFlow.stages.${key}.executor`),
+    asset: stageAssets[deliveryLocale.value][key],
     ...stageMeta[key],
   })),
 )
@@ -353,8 +379,10 @@ const validationLines: StageStyle[] = [
     background: linear-gradient(
       180deg,
       transparent 0%,
-      transparent 84%,
-      rgba(9, 10, 12, 0.38) 90%,
+      transparent 58%,
+      rgba(9, 10, 12, 0.14) 63%,
+      rgba(9, 10, 12, 0.72) 75%,
+      #090a0c 87%,
       #090a0c 100%
     );
     content: '';

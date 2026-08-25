@@ -519,22 +519,26 @@ export const useParticleField = ({
   const pointer: PointerPosition = { x: 0, y: 0, targetX: 0, targetY: 0 }
   const isHomeVariant = HOME_VARIANTS.has(variant)
 
-  // --- closing 变体：Final CTA 粒子收束（scroll-driven，WIDE → 聚合到标题背后常驻闪烁） ---
-  // 收束响应滚动进度；到位后以时间轴闪烁。粒子状态随 resize 重建；RAF 由引擎统一按可见性管理。
+  // The closing preset is scroll-bound: it converges below the CTA, then fades before the footer content.
   interface ClosingParticle {
     sx: number
     sy: number
     tx: number
     ty: number
-    delay: number
-    ease: number
-    twinkleSpeed: number
+    size: number
+    alpha: number
     phase: number
+    driftSpeed: number
+    driftX: number
+    driftY: number
+    breatheSpeed: number
     color: string
   }
 
   let closingParticles: ClosingParticle[] = []
   let closingProgress = 0
+  let closingFade = 0
+  let closingFocus = { x: 0, y: 0 }
 
   const pickClosingColor = () => {
     const roll = Math.random()
@@ -547,33 +551,57 @@ export const useParticleField = ({
   const buildClosingParticles = () => {
     const section = canvas.value?.closest('section')
     const sectionRect = section?.getBoundingClientRect()
-    const sectionHeight =
-      sectionRect && sectionRect.height > 0 ? sectionRect.height : Math.max(size.height, 1)
-    const headingRect = section?.querySelector('h2')?.getBoundingClientRect()
-    const headingCenterX =
-      headingRect && sectionRect
-        ? headingRect.left - sectionRect.left + headingRect.width / 2
-        : size.width / 2
-    const headingCenterY =
-      headingRect && sectionRect ? headingRect.top - sectionRect.top + headingRect.height / 2 : 116
-    const headingRx = Math.max((headingRect?.width ?? 600) * 0.5, 180)
-    const headingRy = Math.max((headingRect?.height ?? 52) * 0.9, 40)
-    const count = size.width < 768 ? 55 : size.width < 1100 ? 95 : 145
-    closingParticles = Array.from({ length: count }, () => {
-      const angle = Math.random() * Math.PI * 2
-      const spread = 0.35 + Math.random() * 0.65
+    const copyRect = section?.querySelector('.cta-inner')?.getBoundingClientRect()
+    closingFocus = {
+      x:
+        copyRect && sectionRect
+          ? copyRect.left - sectionRect.left + copyRect.width / 2
+          : size.width / 2,
+      y:
+        copyRect && sectionRect
+          ? copyRect.top - sectionRect.top + copyRect.height / 2
+          : size.height / 2,
+    }
+    const targetRadiusX = Math.min(size.width * 0.24, 340)
+    const targetRadiusY = Math.min(size.height * 0.24, 112)
+    const edgeOffset = Math.max(24, Math.min(size.width, size.height) * 0.08)
+    const count = size.width < 768 ? 72 : size.width < 1100 ? 110 : 160
+    closingParticles = Array.from({ length: count }, (_, index) => {
+      const side = index % 4
+      const targetAngle = Math.random() * Math.PI * 2
+      const targetDistance = Math.sqrt(Math.random())
+      const targetX = closingFocus.x + Math.cos(targetAngle) * targetRadiusX * targetDistance
+      const targetY = closingFocus.y + Math.sin(targetAngle) * targetRadiusY * targetDistance
+      let startX = Math.random() * size.width
+      let startY = -edgeOffset * (0.35 + Math.random() * 0.65)
+
+      if (side === 1) {
+        startX = size.width + edgeOffset * (0.35 + Math.random() * 0.65)
+        startY = Math.random() * size.height
+      } else if (side === 2) {
+        startX = Math.random() * size.width
+        startY = size.height + edgeOffset * (0.35 + Math.random() * 0.65)
+      } else if (side === 3) {
+        startX = -edgeOffset * (0.35 + Math.random() * 0.65)
+        startY = Math.random() * size.height
+      }
+
       return {
-        sx: size.width * (0.12 + Math.random() * 0.76),
-        sy: sectionHeight * (0.5 + Math.random() * 0.45),
-        tx: headingCenterX + Math.cos(angle) * headingRx * spread,
-        ty: headingCenterY + Math.sin(angle) * headingRy * spread,
-        delay: Math.random() * 0.14,
-        ease: 0.85 + Math.random() * 0.35,
-        twinkleSpeed: 0.6 + Math.random() * 0.8,
+        sx: startX,
+        sy: startY,
+        tx: targetX,
+        ty: targetY,
+        size: 0.95 + Math.random() * 0.85,
+        alpha: 0.38 + Math.random() * 0.2,
         phase: Math.random() * Math.PI * 2,
+        driftSpeed: 0.28 + Math.random() * 0.34,
+        driftX: 1.2 + Math.random() * 2.8,
+        driftY: 1.2 + Math.random() * 2.8,
+        breatheSpeed: 0.7 + Math.random() * 0.8,
         color: pickClosingColor(),
       }
     })
+    if (canvas.value) canvas.value.dataset.particleCount = `${count}`
   }
 
   const drawClosing = (time: number) => {
@@ -582,28 +610,79 @@ export const useParticleField = ({
     const section = canvas.value?.closest('section')
     if (section) {
       const rect = section.getBoundingClientRect()
-      const raw = clamp((window.innerHeight - rect.top) / (window.innerHeight + rect.height), 0, 1)
-      const target = clamp(raw * 1.6, 0, 1)
-      closingProgress += (target - closingProgress) * 0.14
-      if (Math.abs(target - closingProgress) < 0.001) closingProgress = target
+      const viewportHeight = window.innerHeight
+      const startTop = viewportHeight * 0.95
+      const focusTop = (viewportHeight - rect.height) / 2
+      const travel = startTop - focusTop
+      closingProgress = clamp((startTop - rect.top) / Math.max(travel, 1))
+
+      const footerInner = document.querySelector<HTMLElement>('.footer-inner')
+      const footerContentTop = footerInner?.getBoundingClientRect().top ?? viewportHeight
+      closingFade = 1 - smoothstep(viewportHeight * 0.7, viewportHeight * 0.85, footerContentTop)
     }
+    if (canvas.value) canvas.value.dataset.scrollProgress = closingProgress.toFixed(3)
 
     context.setTransform(size.pixelRatio, 0, 0, size.pixelRatio, 0, 0)
     context.clearRect(0, 0, size.width, size.height)
 
-    for (const particle of closingParticles) {
-      const local = clamp(
-        (closingProgress - particle.delay) / Math.max(1 - particle.delay, 0.001),
+    const convergence = smoothstep(0, 1, closingProgress)
+    const entryVisibility = smoothstep(0.02, 0.2, closingProgress)
+    const fieldAlpha = entryVisibility * (1 - closingFade)
+
+    if (fieldAlpha > 0.01) {
+      const glowRadius = Math.min(size.width * 0.28, 380)
+      const glow = context.createRadialGradient(
+        closingFocus.x,
+        closingFocus.y,
         0,
-        1,
+        closingFocus.x,
+        closingFocus.y,
+        glowRadius,
       )
-      const eased = Math.pow(local * local * (3 - 2 * local), particle.ease)
-      const x = particle.sx + (particle.tx - particle.sx) * eased
-      const y = particle.sy + (particle.ty - particle.sy) * eased
-      const radius = 1.2 - 0.55 * eased
-      const twinkle = 1 + Math.sin(time * particle.twinkleSpeed + particle.phase) * 0.45 * eased
-      const alpha = reducedMotion ? 0.1 : (0.38 - 0.1 * eased) * twinkle
+      glow.addColorStop(0, `rgba(62, 141, 255, ${0.13 * fieldAlpha})`)
+      glow.addColorStop(0.42, `rgba(55, 199, 232, ${0.065 * fieldAlpha})`)
+      glow.addColorStop(1, 'rgba(55, 199, 232, 0)')
+      context.fillStyle = glow
+      context.fillRect(
+        closingFocus.x - glowRadius,
+        closingFocus.y - glowRadius,
+        glowRadius * 2,
+        glowRadius * 2,
+      )
+    }
+
+    for (const particle of closingParticles) {
+      const driftScale = reducedMotion ? 0 : 1
+      const driftX =
+        Math.sin(time * particle.driftSpeed + particle.phase) * particle.driftX * driftScale
+      const driftY =
+        Math.cos(time * particle.driftSpeed * 0.83 + particle.phase * 1.37) *
+        particle.driftY *
+        driftScale
+      const breath = reducedMotion
+        ? 0.82
+        : 0.86 + Math.sin(time * particle.breatheSpeed + particle.phase) * 0.14
+      const x = particle.sx + (particle.tx - particle.sx) * convergence + driftX
+      const y = particle.sy + (particle.ty - particle.sy) * convergence + driftY
+      const radius = particle.size * (0.84 + convergence * 0.16) * (0.92 + breath * 0.08)
+      const alpha = particle.alpha * fieldAlpha * breath * (reducedMotion ? 0.55 : 1)
       if (alpha < 0.008) continue
+
+      if (!reducedMotion) {
+        const directionX = particle.tx - particle.sx
+        const directionY = particle.ty - particle.sy
+        const distance = Math.max(Math.hypot(directionX, directionY), 1)
+        const trailLength = 3 + (1 - convergence) * 11
+        context.strokeStyle = `rgba(${particle.color}, ${alpha * 0.34})`
+        context.lineWidth = Math.max(0.5, radius * 0.65)
+        context.beginPath()
+        context.moveTo(x, y)
+        context.lineTo(
+          x - (directionX / distance) * trailLength,
+          y - (directionY / distance) * trailLength,
+        )
+        context.stroke()
+      }
 
       context.fillStyle = `rgba(${particle.color}, ${alpha})`
       context.beginPath()
@@ -611,7 +690,6 @@ export const useParticleField = ({
       context.fill()
     }
   }
-
 
   const resize = () => {
     const element = canvas.value
@@ -629,9 +707,12 @@ export const useParticleField = ({
     element.dataset.pixelRatio = `${pixelRatio}`
     element.dataset.renderWidth = `${element.width}`
     element.dataset.renderHeight = `${element.height}`
-    context = element.getContext('2d', { alpha: variant !== 'closing' })
+    context = element.getContext('2d', { alpha: true })
     context?.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
-    if (variant === 'closing') buildClosingParticles()
+    if (variant === 'closing') {
+      buildClosingParticles()
+      drawClosing(elapsedTime)
+    }
   }
 
   const getSample = (x: number, y: number, time: number): DotSample => {
@@ -753,6 +834,22 @@ export const useParticleField = ({
   const animate = (timestamp: number) => {
     const delta = lastFrameTime === 0 ? 0 : Math.min(timestamp - lastFrameTime, 50)
     lastFrameTime = timestamp
+
+    if (variant === 'closing') {
+      if (isVisible && isPageVisible) {
+        elapsedTime += delta / 1000
+        drawClosing(elapsedTime)
+      }
+      canvas.value?.setAttribute(
+        'data-animation-state',
+        reducedMotion ? 'reduced-motion' : 'running',
+      )
+      if (!reducedMotion && isVisible && isPageVisible) {
+        frame = window.requestAnimationFrame(animate)
+      } else frame = 0
+      return
+    }
+
     if (isVisible && isPageVisible) {
       const activityTarget = active.value ? 1 : 0
       activityAmount += (activityTarget - activityAmount) * Math.min(1, delta / 700)
@@ -772,6 +869,12 @@ export const useParticleField = ({
     lastFrameTime = 0
     element?.setAttribute('data-animation-state', 'running')
     frame = window.requestAnimationFrame(animate)
+  }
+
+  const handleClosingScroll = () => {
+    if (variant !== 'closing' || !isVisible || !isPageVisible) return
+    if (reducedMotion) drawClosing(elapsedTime)
+    else startAnimation()
   }
 
   const stopAnimation = () => {
@@ -796,8 +899,10 @@ export const useParticleField = ({
 
   const handleDocumentVisibility = () => {
     isPageVisible = !document.hidden
-    if (isPageVisible) startAnimation()
-    else stopAnimation()
+    if (isPageVisible) {
+      if (variant === 'closing') handleClosingScroll()
+      else startAnimation()
+    } else stopAnimation()
   }
 
   onMounted(() => {
@@ -824,6 +929,8 @@ export const useParticleField = ({
       element.addEventListener('pointermove', handlePointerMove)
       element.addEventListener('pointerleave', handlePointerLeave)
     }
+    if (variant === 'closing')
+      window.addEventListener('scroll', handleClosingScroll, { passive: true })
     document.addEventListener('visibilitychange', handleDocumentVisibility)
 
     draw(0)
@@ -838,6 +945,7 @@ export const useParticleField = ({
     visibilityObserver?.disconnect()
     element?.removeEventListener('pointermove', handlePointerMove)
     element?.removeEventListener('pointerleave', handlePointerLeave)
+    window.removeEventListener('scroll', handleClosingScroll)
     document.removeEventListener('visibilitychange', handleDocumentVisibility)
   })
 }

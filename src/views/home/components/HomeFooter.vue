@@ -10,11 +10,21 @@
           <p>{{ t('home.redesign.footer.tagline') }}</p>
           <div class="footer-qr-codes">
             <figure class="footer-qr-item">
-              <img :src="officialAccountQr" :alt="`CoStrict ${t('footer.officialAccountLabel')}`" />
+              <img
+                :src="officialAccountQr"
+                :alt="`CoStrict ${t('footer.officialAccountLabel')}`"
+                loading="lazy"
+                decoding="async"
+              />
               <figcaption>CoStrict {{ t('footer.officialAccountLabel') }}</figcaption>
             </figure>
             <figure class="footer-qr-item">
-              <img :src="communicationGroupQr" :alt="`CoStrict ${t('footer.joinGroupLabel')}`" />
+              <img
+                :src="communicationGroupQr"
+                :alt="`CoStrict ${t('footer.joinGroupLabel')}`"
+                loading="lazy"
+                decoding="async"
+              />
               <figcaption>CoStrict {{ t('footer.joinGroupLabel') }}</figcaption>
             </figure>
           </div>
@@ -88,17 +98,12 @@ const columns = computed<FooterColumn[]>(() => [
       { key: 'pricing', label: t('home.redesign.header.pricing') },
     ],
   },
-  {
-    key: 'enterprise',
-    title: t('home.redesign.footer.enterprise'),
-    links: [{ key: 'enterprise', label: t('home.redesign.header.enterprise') }],
-  },
 ])
 
 const openExternal = (url: string) => window.open(url, '_blank', 'noopener')
 
 const navigate = (key: string) => {
-  if (key === 'cloud') return void router.push({ name: 'cloud' })
+  if (key === 'cloud') return openExternal('https://zgsm.sangfor.com/')
   if (key === 'cli') {
     return void router.push({ name: 'download', query: { product: 'cli', tab: 'cli' } })
   }
@@ -109,9 +114,6 @@ const navigate = (key: string) => {
     return void router.push({ name: key })
   }
   if (key === 'docs') return openExternal('https://docs.costrict.ai')
-  if (key === 'enterprise') {
-    return openExternal('https://docs.costrict.ai/deployment/introduction/')
-  }
   if (key === 'github') return openExternal('https://github.com/zgsm-ai/costrict')
 }
 </script>
@@ -194,7 +196,7 @@ const navigate = (key: string) => {
 
 .footer-columns {
   display: grid;
-  grid-template-columns: 140px 140px 120px;
+  grid-template-columns: 140px 140px;
   gap: 56px;
 }
 

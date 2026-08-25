@@ -3,13 +3,23 @@
     <div class="collaboration-visual-ribbons">
       <span v-for="index in 3" :key="index"></span>
     </div>
-    <img class="collaboration-visual-art" :src="collaborationVisual" alt="" draggable="false" />
+    <img
+      class="collaboration-visual-art"
+      :src="collaborationVisual"
+      alt=""
+      loading="lazy"
+      decoding="async"
+      draggable="false"
+    />
     <div class="collaboration-visual-bloom"></div>
   </div>
 </template>
 
 <script setup lang="ts">
-import collaborationVisual from '@/assets/home/redesign/s5-collaboration-system.webp'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import collaborationVisualEn from '@/assets/home/redesign/s5-collaboration-system-en.webp'
+import collaborationVisualZh from '@/assets/home/redesign/s5-collaboration-system.webp'
 
 interface Props {
   active?: boolean
@@ -22,6 +32,11 @@ withDefaults(defineProps<Props>(), {
 defineOptions({
   name: 'CollaborationValueVisual',
 })
+
+const { locale } = useI18n()
+const collaborationVisual = computed(() =>
+  locale.value === 'en' ? collaborationVisualEn : collaborationVisualZh,
+)
 </script>
 
 <style scoped lang="less">
@@ -65,7 +80,7 @@ defineOptions({
 
 .collaboration-visual-ribbons {
   position: absolute;
-  z-index: 2;
+  z-index: 0;
   inset: 0;
   overflow: hidden;
   mix-blend-mode: screen;
@@ -81,13 +96,13 @@ defineOptions({
     background: linear-gradient(
       180deg,
       transparent 0%,
-      rgba(138, 255, 180, 0.05) 18%,
-      rgba(122, 242, 156, 0.24) 50%,
-      rgba(68, 209, 129, 0.07) 84%,
+      rgba(96, 166, 126, 0.02) 18%,
+      rgba(92, 172, 128, 0.1) 50%,
+      rgba(62, 143, 102, 0.025) 84%,
       transparent 100%
     );
     filter: blur(9px);
-    opacity: 0.5;
+    opacity: 0.28;
     transform-origin: center;
     animation: collaboration-ribbon-flow 9s ease-in-out infinite;
     will-change: transform, opacity;
@@ -98,13 +113,13 @@ defineOptions({
 
     &:nth-child(2) {
       left: 49%;
-      opacity: 0.46;
+      opacity: 0.24;
       animation-delay: -3.1s;
     }
 
     &:nth-child(3) {
       left: 56%;
-      opacity: 0.34;
+      opacity: 0.18;
       animation-delay: -5.8s;
     }
   }
@@ -119,11 +134,11 @@ defineOptions({
   height: 250px;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 66% 38%, rgba(188, 255, 203, 0.12), transparent 24%),
-    radial-gradient(circle at 45% 54%, rgba(34, 211, 238, 0.1), transparent 42%),
-    radial-gradient(circle at 42% 54%, rgba(22, 119, 255, 0.16), transparent 72%);
+    radial-gradient(circle at 66% 38%, rgba(117, 180, 140, 0.045), transparent 24%),
+    radial-gradient(circle at 45% 54%, rgba(34, 170, 190, 0.055), transparent 42%),
+    radial-gradient(circle at 42% 54%, rgba(22, 98, 190, 0.09), transparent 72%);
   filter: blur(42px);
-  opacity: 0.26;
+  opacity: 0.16;
   transform: translateX(-50%) scale(0.96);
   transform-origin: center;
   mix-blend-mode: screen;
@@ -137,7 +152,7 @@ defineOptions({
   }
 
   .collaboration-visual-bloom {
-    opacity: 0.32;
+    opacity: 0.2;
   }
 }
 
@@ -157,12 +172,12 @@ defineOptions({
 @keyframes collaboration-ribbon-flow {
   0%,
   100% {
-    opacity: 0.38;
+    opacity: 0.2;
     transform: translate3d(-10px, 10px, 0) rotate(-5deg) scaleY(0.94);
   }
 
   48% {
-    opacity: 0.78;
+    opacity: 0.36;
     transform: translate3d(12px, -14px, 0) rotate(6deg) scaleY(1.08);
   }
 }
