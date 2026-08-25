@@ -154,8 +154,17 @@ describe('August Developer Month page integration', () => {
     )
   })
 
-  it('removes unavailable English navigation items without leaving placeholders', () => {
+  it('renders English products as direct navigation items without unavailable placeholders', () => {
     expect(siteHeaderSource).toContain("const isEnglish = computed(() => locale.value === 'en')")
+    expect(siteHeaderSource).toContain(
+      '<ProductMenu v-if="!isEnglish" class="home-product-menu" />',
+    )
+    expect(siteHeaderSource).toMatch(
+      /<template v-else>[\s\S]*?v-for="item in productNavigationItems"[\s\S]*?navigateProduct\(item\.route\)/,
+    )
+    expect(siteHeaderSource).toMatch(
+      /<div v-if="!isEnglish" class="mobile-nav-product">[\s\S]*?<template v-else>[\s\S]*?v-for="item in productNavigationItems"/,
+    )
     expect(siteHeaderSource).toMatch(
       /v-if="!isEnglish"[\s\S]*?activeNav === 'pricing'[\s\S]*?home\.redesign\.header\.pricing/,
     )

@@ -37,7 +37,19 @@
           :class="{ 'is-morphing': scrollProgress > 0 }"
           aria-label="Primary navigation"
         >
-          <ProductMenu class="home-product-menu" />
+          <ProductMenu v-if="!isEnglish" class="home-product-menu" />
+          <template v-else>
+            <button
+              v-for="item in productNavigationItems"
+              :key="item.key"
+              class="nav-pill-item"
+              :class="{ active: isProductItemActive(item.key) }"
+              type="button"
+              @click="navigateProduct(item.route)"
+            >
+              {{ item.title }}
+            </button>
+          </template>
           <button
             v-if="!isEnglish"
             class="nav-pill-item"
@@ -102,7 +114,7 @@
           class="mobile-nav-sheet"
           aria-label="Mobile navigation"
         >
-          <div class="mobile-nav-product">
+          <div v-if="!isEnglish" class="mobile-nav-product">
             <button
               class="mobile-nav-product-trigger"
               :class="{ active: isProductNavigationActive }"
@@ -125,7 +137,7 @@
                 v-for="item in productNavigationItems"
                 :key="item.key"
                 class="mobile-product-item"
-                :class="{ active: isMobileProductActive(item.key) }"
+                :class="{ active: isProductItemActive(item.key) }"
                 type="button"
                 @click="navigateMobileProduct(item.route)"
               >
@@ -134,6 +146,17 @@
               </button>
             </div>
           </div>
+          <template v-else>
+            <button
+              v-for="item in productNavigationItems"
+              :key="item.key"
+              type="button"
+              :class="{ active: isProductItemActive(item.key) }"
+              @click="navigateMobileProduct(item.route)"
+            >
+              {{ item.title }}
+            </button>
+          </template>
           <button v-if="!isEnglish" type="button" @click="navigateMobile('pricing')">
             {{ t('home.redesign.header.pricing') }}
           </button>
@@ -276,6 +299,7 @@ const toHome = () => {
   router.push({ name: 'home' })
 }
 const toRoute = (name: string) => router.push({ name })
+const navigateProduct = (route: RouteLocationRaw) => router.push(route)
 
 const closeMobileNav = () => {
   isMobileNavOpen.value = false
@@ -300,7 +324,7 @@ const navigateMobileProduct = (route: RouteLocationRaw) => {
   router.push(route)
 }
 
-const isMobileProductActive = (key: ProductNavigationItem['key']) => {
+const isProductItemActive = (key: ProductNavigationItem['key']) => {
   const route = router.currentRoute.value
   if (key === 'cloud') return route.name === 'cloud'
   return route.name === 'download' && route.query.product === key
@@ -719,6 +743,11 @@ onBeforeUnmount(() => {
       background: rgba(255, 255, 255, 0.06);
       outline: none;
     }
+  }
+
+  > button.active {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.06);
   }
 }
 
