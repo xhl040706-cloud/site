@@ -4,7 +4,7 @@ import { mount, RouterLinkStub } from '@vue/test-utils'
 import { createI18n } from 'vue-i18n'
 import zh from '@/locales/zh.json'
 import en from '@/locales/en.json'
-import AugustDeveloperMonthBanner from '@/views/home/components/AugustDeveloperMonthBanner.vue'
+import AugustDeveloperMonthBanner from '@/components/AugustDeveloperMonthBanner.vue'
 
 const mountBanner = (locale: 'zh' | 'en') => {
   const i18n = createI18n({
@@ -70,8 +70,6 @@ describe('AugustDeveloperMonthBanner', () => {
     vi.setSystemTime('2026-08-06T12:00:00+08:00')
     const wrapper = mountBanner('en')
 
-    expect(wrapper.text()).toContain(
-      'CoStrict August Developer Month｜5 new models are now live',
-    )
+    expect(wrapper.text()).toContain('CoStrict August Developer Month｜5 new models are now live')
   })
 })

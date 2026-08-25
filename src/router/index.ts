@@ -18,6 +18,9 @@ const ccfCompetitionRoute = createPrefetchableRoute(
 const resourceRoute = createPrefetchableRoute(() => import('@/views/resourceCalculator/index.vue'))
 const blogRoute = createPrefetchableRoute(() => import('@/views/blog/index.vue'))
 const blogDetailRoute = createPrefetchableRoute(() => import('@/views/blog/BlogDetail.vue'))
+const particleShowcaseRoute = createPrefetchableRoute(
+  () => import('@/views/particleShowcase/index.vue'),
+)
 
 // 静态路由配置 - 不再动态增删
 export const routes = [
@@ -83,6 +86,14 @@ export const routes = [
     component: blogDetailRoute.load,
     meta: {
       localeVisible: ['zh'],
+    },
+  },
+  {
+    path: '/particle-showcase',
+    name: 'ParticleShowcasePage',
+    component: particleShowcaseRoute.load,
+    meta: {
+      hideNavbar: true,
     },
   },
   {

@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { NMessageProvider } from 'naive-ui'
 import { useRoute } from 'vue-router'
-import navbar from './components/NavBar.vue'
+import SiteHeader from '@/components/SiteHeader.vue'
 import { useRouterPrefetch } from '@/hooks/useRouterPrefetch'
 
 // 启用路由悬停预加载
@@ -13,7 +13,7 @@ const showNavbar = computed(() => route.meta.hideNavbar !== true)
 </script>
 
 <template>
-  <navbar v-if="showNavbar" />
+  <SiteHeader v-if="showNavbar" />
   <n-message-provider>
     <main>
       <router-view />

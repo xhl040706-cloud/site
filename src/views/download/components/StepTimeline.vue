@@ -5,6 +5,7 @@ import { NTimeline, NTimelineItem, useMessage } from 'naive-ui'
 import type { StepItem } from '../types'
 import InstallMethodTabs from './InstallMethodTabs.vue'
 import type { InstallMethod } from '../types'
+import { DOWNLOAD_URLS } from '../constants'
 
 defineOptions({
   name: 'StepTimeline',
@@ -83,6 +84,28 @@ const handleCopyCommand = async (cmd: string, index: number) => {
             <template v-if="activeTab === 'vscode'">
               <div class="vscode-content">
                 <p class="content-text">{{ step.content }}</p>
+                <!-- 步骤1：直接安装（拉起 VS Code 扩展页） -->
+                <a
+                  v-if="index === 0"
+                  class="flex mt-2 mb-2 download-link"
+                  :href="DOWNLOAD_URLS.vscodeExtension"
+                >
+                  <span style="color: #4083e8">{{ $t('download.directPluginInstall') }}</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    viewBox="0 0 20 20"
+                    width="18"
+                    color="#fff"
+                  >
+                    <g fill="none">
+                      <path
+                        d="M15.245 16.498a.75.75 0 0 1 .101 1.493l-.101.007H4.75a.75.75 0 0 1-.102-1.493l.102-.007h10.495zM10.004 2a.75.75 0 0 1 .743.648l.007.102l-.001 10.193l2.966-2.97a.75.75 0 0 1 .977-.074l.084.072a.75.75 0 0 1 .073.977l-.072.084l-4.243 4.25l-.07.063l-.092.059l-.036.021l-.091.038l-.12.03l-.07.008l-.06.002a.726.726 0 0 1-.15-.016l-.082-.023a.735.735 0 0 1-.257-.146l-4.29-4.285a.75.75 0 0 1 .976-1.134l.084.073l2.973-2.967V2.75a.75.75 0 0 1 .75-.75z"
+                        fill="currentColor"
+                      ></path>
+                    </g>
+                  </svg>
+                </a>
                 <!-- 步骤1：添加手动下载链接 -->
                 <div
                   v-if="index === 0"

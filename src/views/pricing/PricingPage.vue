@@ -1,6 +1,5 @@
 <template>
   <div class="pricing-page-shell">
-    <AugustDeveloperMonthBanner />
     <div class="pricing-page pt-39.5 pb-23 relative">
       <img
         src="../../assets/price/bg_1.png"
@@ -151,7 +150,6 @@ import { useHead } from '@unhead/vue'
 import { useRouter } from 'vue-router'
 import { createPricingPlans } from './const'
 import { computed } from 'vue'
-import AugustDeveloperMonthBanner from '@/views/home/components/AugustDeveloperMonthBanner.vue'
 
 const { t } = useI18n()
 const router = useRouter()

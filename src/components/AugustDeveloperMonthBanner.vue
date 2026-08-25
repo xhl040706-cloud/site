@@ -3,7 +3,17 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { AUGUST_DEVELOPER_MONTH_PATH } from '@/views/operation/constants'
 
-defineOptions({ name: 'AugustDeveloperMonthBanner' })
+defineOptions({
+  name: 'AugustDeveloperMonthBanner',
+})
+
+interface Props {
+  embedded?: boolean
+}
+
+withDefaults(defineProps<Props>(), {
+  embedded: false,
+})
 
 const { t } = useI18n()
 
@@ -55,13 +65,14 @@ onBeforeUnmount(() => {
     target="_blank"
     rel="noopener noreferrer"
     class="august-banner"
+    :class="{ 'is-embedded': embedded }"
     :aria-label="t('home.augustBanner.ariaLabel')"
   >
     <span class="august-banner__content">
       <span class="august-banner__copy">
-        <span>{{ t('home.augustBanner.campaignName') }}</span>
+        <span class="august-banner__campaign-name">{{ t('home.augustBanner.campaignName') }}</span>
         <span class="august-banner__separator" aria-hidden="true">｜</span>
-        <span>{{ t(messageKey) }}</span>
+        <span class="august-banner__message">{{ t(messageKey) }}</span>
       </span>
       <span class="august-banner__arrow" aria-hidden="true">→</span>
     </span>
@@ -97,6 +108,24 @@ onBeforeUnmount(() => {
   &:focus-visible {
     outline: 2px solid #16dec2;
     outline-offset: -2px;
+  }
+}
+
+.august-banner.is-embedded {
+  position: static;
+  z-index: 0;
+  min-height: 34px;
+  background: #14283f;
+  border: 0;
+
+  &:hover,
+  &:focus-visible {
+    background: #1b3552;
+  }
+
+  .august-banner__content {
+    width: min(72%, calc(100% - 96px));
+    font-size: 13px;
   }
 }
 
@@ -149,6 +178,21 @@ onBeforeUnmount(() => {
     width: 90%;
     gap: 8px;
     font-size: 13px;
+  }
+
+  .august-banner.is-embedded {
+    min-height: 34px;
+    padding: 0;
+
+    .august-banner__content {
+      width: calc(100% - 80px);
+      font-size: 12px;
+    }
+
+    .august-banner__separator,
+    .august-banner__message {
+      display: none;
+    }
   }
 }
 

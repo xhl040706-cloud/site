@@ -15,14 +15,203 @@
   },
   "productMenu": {
     "cliTitle": "CoStrict CLI",
-    "cliDesc": "Collaborative Terminal Commands",
+    "cliDesc": "Terminal collaboration",
     "ideTitle": "IDE Plugin",
-    "ideDesc": "VS Code & JetBrains Compatible",
+    "ideDesc": "VS Code & JetBrains",
     "cloudTitle": "CoStrict Cloud",
     "cloudDesc": "Online Coding Platform",
     "new": "New"
   },
   "home": {
+    "redesign": {
+      "seo": {
+        "title": "CoStrict - Enterprise AI R&D Infrastructure",
+        "description": "Bring AI into real R&D workflows and turn individual productivity into reusable, governable organizational capability.",
+        "organizationDescription": "CoStrict is an enterprise AI coding platform built for real R&D workflows."
+      },
+      "header": {
+        "notice": "This announcement can be replaced with campaign copy and dismissed",
+        "noticeLink": "Learn more",
+        "closeNotice": "Dismiss announcement",
+        "product": "Product",
+        "pricing": "Pricing",
+        "docs": "Docs",
+        "blog": "Blog",
+        "activity": "Events",
+        "enterprise": "Enterprise",
+        "openMenu": "Open navigation menu",
+        "closeMenu": "Close navigation menu"
+      },
+      "hero": {
+        "titleLine1": "AI infrastructure built",
+        "titleLine2": "for organization-wide R&D",
+        "subtitle": "Bring AI into real R&D workflows and turn individual productivity into reusable, governable organizational capability",
+        "download": "Download",
+        "tryOnline": "Enter Web"
+      },
+      "products": {
+        "title": "One CoStrict, across every R&D environment",
+        "subtitle": "Use Cloud, CLI, or IDE plugins for different scenarios while sharing organizational capabilities and R&D context",
+        "cloud": {
+          "name": "CoStrict Cloud",
+          "title": "Manage AI R&D workspaces in the cloud",
+          "description": "Connect remote development environments and preserve project context so AI coding work moves seamlessly across devices.",
+          "action": "Enter Web",
+          "demoPrompt": "Help me generate a TodoList.",
+          "builderTitle": "What do you want to build today?",
+          "builderSubtitle": "Start a new session in the current workspace and directory.",
+          "promptPlaceholder": "Ask CoStrict...",
+          "buildMode": "Build",
+          "model": "GLM-5.3-Zhipu",
+          "workspace": "/Users",
+          "sendPrompt": "Send prompt",
+          "replayDemo": "Replay demo"
+        },
+        "cli": {
+          "name": "CoStrict CLI",
+          "title": "Drive AI development workflows from the terminal",
+          "description": "Call CoStrict directly from the command line to generate, analyze, and debug code, as well as automate development tasks.",
+          "action": "Install CLI"
+        },
+        "ide": {
+          "name": "IDE plugins",
+          "title": "Use AI natively inside your IDE",
+          "description": "Call AI capabilities in your familiar development environment, with project context understood to assist code writing and optimization.",
+          "action": "Install plugin"
+        }
+      },
+      "capabilities": {
+        "sectionTitle": "Platform capabilities for organizational R&D",
+        "sectionSubtitle": "From collaboration and the Skill marketplace to security and efficiency, covering the critical stages of AI R&D from task execution to organizational governance.",
+        "expandVideo": "Expand video",
+        "collapseVideo": "Return to card",
+        "collaboration": {
+          "label": "Organization collaboration",
+          "title": "Bring people and AI into the same R&D workflow",
+          "description": "Orchestrate requirements, solution design, development, testing, and verification as executable workflows, supporting divided collaboration between AI and R&D staff with human review and confirmation at critical stages."
+        },
+        "agents": {
+          "label": "Skill marketplace",
+          "title": "Make proven Skills discoverable and reusable across the organization",
+          "description": "Centralize, manage, and share Skills for different R&D tasks so teams can discover and reuse proven methods without repeated setup."
+        },
+        "knowledge": {
+          "label": "Knowledge base",
+          "title": "Turn project knowledge into shared team context",
+          "description": "Connect code, documents, and R&D knowledge so project context can accumulate, be shared, and give people and AI the same knowledge foundation."
+        },
+        "security": {
+          "label": "Code security scanning",
+          "title": "Bring security checks into AI-assisted R&D",
+          "description": "Identify potential code security risks and move detection earlier in the R&D process so teams can find and address issues sooner."
+        },
+        "analytics": {
+          "label": "R&D analytics",
+          "title": "Make AI-assisted R&D observable and measurable",
+          "description": "Observe AI usage and the R&D process across adoption, efficiency, cost, and contribution to evaluate real value and guide continuous improvement."
+        }
+      },
+      "value": {
+        "title": "Turn individual AI efficiency into organizational R&D capability",
+        "subtitle": "Go beyond completing a single development task: let collaboration methods, R&D experience, and quality systems keep delivering value across the organization.",
+        "items": {
+          "collaboration": {
+            "title": "From individual productivity to team collaboration",
+            "description": "Teams share tasks, project context, and collaboration rules instead of using AI in isolation, keeping people and AI aligned around the same goals."
+          },
+          "delivery": {
+            "title": "Bring AI into real R&D delivery",
+            "description": "From requirements and solution design to coding and verification, AI participates in the real process instead of stopping at Q&A and completion."
+          },
+          "knowledge": {
+            "title": "Keep experience from disappearing with each project",
+            "description": "Knowledge, Agent capabilities, and proven R&D practices continue to accumulate and be reused, reducing repeated exploration as organizational capability grows across projects."
+          },
+          "governance": {
+            "title": "Keep R&D quality and security under control",
+            "description": "Embed human review, security checks, and R&D standards so issues surface earlier and AI development remains controlled."
+          }
+        },
+        "deliveryFlow": {
+          "common": {
+            "executor": "Executor",
+            "reviewer": "Reviewer",
+            "digitalWorker": "Digital worker",
+            "technicalLead": "Technical lead"
+          },
+          "stages": {
+            "requirement": {
+              "title": "Requirements",
+              "description": "Clarify requirements and produce PRDs and user stories",
+              "executor": "Product manager"
+            },
+            "solution": {
+              "title": "Solution design",
+              "description": "Define architecture, interfaces, and data models",
+              "executor": "Architect"
+            },
+            "taskBreakdown": {
+              "title": "Task breakdown",
+              "description": "Break work into subtasks and queue them for execution",
+              "executor": "Product manager"
+            },
+            "tdd": {
+              "title": "TDD development",
+              "description": "Build code and unit tests through test-driven development",
+              "executor": "Software engineer"
+            },
+            "validation": {
+              "title": "Integration validation",
+              "description": "Run integration and pre-release validation",
+              "executor": "DevOps engineer"
+            }
+          }
+        }
+      },
+      "faq": {
+        "title": "Questions before you get started",
+        "subtitle": "A quick guide to CoStrict usage and common questions.",
+        "items": {
+          "entry": {
+            "question": "How should I choose between Cloud, CLI, and IDE plugins?",
+            "answer": "Cloud is best for organizational collaboration and platform capability management; CLI runs R&D tasks directly in the terminal; IDE plugins bring CoStrict into everyday coding. Together they form CoStrict, so choose the entry that fits the current R&D scenario."
+          },
+          "installation": {
+            "question": "How do I download and install CoStrict?",
+            "answer": "Choose the CLI or IDE plugin entry point and follow the corresponding installation guide to complete setup."
+          },
+          "team": {
+            "question": "How can enterprise teams use CoStrict?",
+            "answer": "Teams can use CoStrict to bring collaboration, Agent capabilities, knowledge, security, and analytics into one platform, moving individual AI usage into a unified organizational R&D system."
+          },
+          "security": {
+            "question": "How does CoStrict help protect code and data?",
+            "answer": "CoStrict provides code security scanning, process reviews, and R&D standards to move quality and security controls earlier in AI-assisted R&D. Specific capabilities and applicability depend on the current product version."
+          },
+          "pricing": {
+            "question": "How are Credits, plans, and pricing calculated?",
+            "answer": "Specific quotas and billing rules vary by product and usage model. Refer to the latest pricing page for current details."
+          },
+          "deployment": {
+            "question": "Does CoStrict support private enterprise deployment?",
+            "answer": "For private deployment requirements, contact the team through the Enterprise entry point. Deployment options, environment requirements, and service scope depend on the enterprise solution."
+          }
+        }
+      },
+      "finalCta": {
+        "title": "Turn individual AI efficiency into organizational R&D capability",
+        "description": "From individual development to team collaboration, keep knowledge, Agents, and R&D practices compounding and reusable.",
+        "primary": "Enter Web",
+        "secondary": "Download CoStrict"
+      },
+      "footer": {
+        "tagline": "AI R&D infrastructure that helps organizations work more efficiently",
+        "product": "Product",
+        "resources": "Resources",
+        "enterprise": "Enterprise",
+        "ide": "IDE plugins"
+      }
+    },
     "augustBanner": {
       "campaignName": "CoStrict August Developer Month",
       "stage1Text": "Existing users receive an extra 20% Credits",
@@ -244,6 +433,7 @@
     "jetbrainsStep1Content2": "2. Click Navigation - Plugins, click the settings icon, click Install Plugin from Local in the dropdown menu, and select the downloaded zip file to install",
     "jetbrainsStep2Title": "Enable Plugin",
     "jetbrainsStep2Content": "Restart IntelliJ IDE. After restarting, log in to your account to start experiencing AI-assisted coding.",
+    "directPluginInstall": "Install in VS Code",
     "manualPluginDownload": "Manual download",
     "manualPluginDownload2": "Plugin download speed slow? Switch to a faster download source",
     "jetbrainsSupportIdes": "supports the following JetBrains series IDEs:",

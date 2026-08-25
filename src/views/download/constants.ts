@@ -27,6 +27,8 @@ export const JETBRAINS_IDES = [
 
 export const DOWNLOAD_URLS = {
   vscode: 'https://costrict.ai/plugin/download/',
+  /** VSCode 插件安装深链：由系统拉起 VS Code 并打开 CoStrict 扩展安装页 */
+  vscodeExtension: 'vscode:extension/zgsm-ai.zgsm',
   jetbrainsPrimary: 'https://costrict.ai/plugin/jetbrain/',
   jetbrainsSecondary: 'https://zgsm.sangfor.com/costrict-static/jetbrains-plugin',
 } as const
