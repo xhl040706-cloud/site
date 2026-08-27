@@ -209,7 +209,8 @@
         "product": "Product",
         "resources": "Resources",
         "enterprise": "Enterprise",
-        "ide": "IDE plugins"
+        "ide": "IDE plugins",
+        "backToTop": "Back to top"
       }
     },
     "augustBanner": {

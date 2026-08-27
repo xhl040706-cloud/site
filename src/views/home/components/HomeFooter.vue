@@ -1,5 +1,5 @@
 <template>
-  <footer class="home-footer">
+  <footer class="home-footer" :class="{ 'is-static': props.alwaysVisible }">
     <div class="footer-inner" data-home-reveal="content">
       <div class="footer-main">
         <div class="footer-brand">
@@ -20,12 +20,12 @@
             </figure>
             <figure class="footer-qr-item">
               <img
-                :src="communicationGroupQr"
-                :alt="`CoStrict ${t('footer.joinGroupLabel')}`"
+                :src="costrictAssistantQr"
+                alt="CoStrict助手"
                 loading="lazy"
                 decoding="async"
               />
-              <figcaption>CoStrict {{ t('footer.joinGroupLabel') }}</figcaption>
+              <figcaption>CoStrict助手</figcaption>
             </figure>
           </div>
         </div>
@@ -47,7 +47,10 @@
 
       <div class="footer-bottom">
         <span>© {{ currentYear }} CoStrict</span>
-        <button class="footer-github" type="button" @click="navigate('github')">GitHub</button>
+        <button class="footer-back-top" type="button" @click="scrollToTop">
+          {{ t('home.redesign.footer.backToTop') }}
+          <span aria-hidden="true">↑</span>
+        </button>
       </div>
     </div>
   </footer>
@@ -57,11 +60,19 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import communicationGroupQr from '@/assets/qrcode/communication_group.webp'
+import costrictAssistantQr from '@/assets/qrcode/costrict-assistant.png'
 import officialAccountQr from '@/assets/qrcode/official_account.webp'
 
 defineOptions({
   name: 'HomeFooter',
+})
+
+interface Props {
+  alwaysVisible?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  alwaysVisible: false,
 })
 
 interface FooterLink {
@@ -102,6 +113,10 @@ const columns = computed<FooterColumn[]>(() => [
 
 const openExternal = (url: string) => window.open(url, '_blank', 'noopener')
 
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
 const navigate = (key: string) => {
   if (key === 'cloud') return openExternal('https://zgsm.sangfor.com/')
   if (key === 'cli') {
@@ -114,7 +129,6 @@ const navigate = (key: string) => {
     return void router.push({ name: key })
   }
   if (key === 'docs') return openExternal('https://docs.costrict.ai')
-  if (key === 'github') return openExternal('https://github.com/zgsm-ai/costrict')
 }
 </script>
 
@@ -243,7 +257,10 @@ const navigate = (key: string) => {
   line-height: 18px;
 }
 
-.footer-github {
+.footer-back-top {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   padding: 0;
   border: 0;
   color: #536276;
@@ -299,6 +316,16 @@ const navigate = (key: string) => {
   }
 }
 
+.home-footer.is-static {
+  .footer-brand,
+  .footer-column,
+  .footer-bottom {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 @media (max-width: 1023px) {
   .footer-inner {
     width: calc(100% - 64px);
@@ -335,11 +362,15 @@ const navigate = (key: string) => {
   }
 
   .footer-qr-item {
-    width: 92px;
+    width: calc((100% - 12px) / 2);
 
     img {
       width: 92px;
       height: 92px;
+    }
+
+    figcaption {
+      font-size: 11px;
     }
   }
 }
@@ -354,7 +385,7 @@ const navigate = (key: string) => {
   }
 
   .footer-column button,
-  .footer-github {
+  .footer-back-top {
     transition: none;
   }
 }

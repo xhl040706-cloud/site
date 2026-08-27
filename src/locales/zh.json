@@ -209,7 +209,8 @@
         "product": "产品",
         "resources": "资源",
         "enterprise": "企业",
-        "ide": "IDE 插件"
+        "ide": "IDE 插件",
+        "backToTop": "返回顶部"
       }
     },
     "augustBanner": {
