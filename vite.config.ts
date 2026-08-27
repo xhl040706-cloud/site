@@ -67,6 +67,9 @@ export default defineConfig({
           if (id.includes('/views/cloud/')) {
             return 'page-cloud'
           }
+          if (id.includes('/views/cli/')) {
+            return 'page-cli'
+          }
           if (id.includes('/views/blog/')) {
             return 'page-blog'
           }

@@ -399,6 +399,231 @@
       ]
     }
   },
+  "cli": {
+    "meta": {
+      "title": "CoStrict CLI — AI coding agent in your terminal",
+      "description": "CoStrict CLI analyzes, builds and verifies changes in your command line with full project context. Install on macOS, Linux and Windows via npm or the official script."
+    },
+    "hero": {
+      "eyebrow": "CoStrict CLI",
+      "title": "Hand engineering tasks to the AI in your terminal",
+      "description": "Let AI read code, edit files and run commands in the current project directory, with every result kept in your terminal.",
+      "installCta": "Copy install command",
+      "docsCta": "Read the docs",
+      "terminalHint": "Describe your first engineering task",
+      "terminalInstalled": "installed",
+      "terminalProjectLabel": "Project",
+      "terminalProjectValue": "~/work/costrict-site",
+      "terminalStatusLabel": "Status",
+      "terminalStatusValue": "Signed in · project context loaded",
+      "terminalLastLogin": "Last login: Mon Aug 10 10:18:59 on console",
+      "terminalVersionLabel": "Version",
+      "terminalVersionValue": "CoStrict CLI v4.2.30",
+      "terminalModelLabel": "Model",
+      "terminalModelValue": "GLM-5.3-Zhipu · CoStrict",
+      "terminalAccountLabel": "Account",
+      "terminalAccountValue": "developer · workspace",
+      "terminalMessageLabel": "Message",
+      "terminalMessageValue": "Type /help for commands, or ? for shortcuts",
+      "terminalYouLabel": "you",
+      "terminalTaskPrompt": "Fix the intermittent login-state failure and run the related tests",
+      "terminalTaskResponseOne": "I will inspect the authentication state and related tests to confirm the current login implementation.",
+      "terminalTaskReceiptOne": "Read 3 files, searched auth (ctrl+o to expand)",
+      "terminalTaskResponseTwo": "Located and fixed the concurrent refresh-token overwrite.",
+      "terminalTaskReceiptTwo": "Updated 2 files · 18 tests passed",
+      "terminalTaskTwoPrompt": "Cover retry edge cases for requests and run the tests",
+      "terminalTaskTwoResponseOne": "I will inspect retry conditions, timeout handling and the current test coverage.",
+      "terminalTaskTwoReceiptOne": "Read 4 files, ran 6 focused tests (ctrl+o to expand)",
+      "terminalTaskTwoResponseTwo": "Added edge cases for timeouts and cancelled requests.",
+      "terminalTaskTwoReceiptTwo": "Updated 3 files · 24 tests passed",
+      "terminalTaskThreePrompt": "Review this change and run the pre-release checks",
+      "terminalTaskThreeResponseOne": "I will verify the change scope, type checks and build result.",
+      "terminalTaskThreeReceiptOne": "Read git diff, ran type-check (ctrl+o to expand)",
+      "terminalTaskThreeResponseTwo": "Validation is complete with no release-blocking issues found.",
+      "terminalTaskThreeReceiptTwo": "Type check passed · build completed",
+      "terminalContextLabel": "Context",
+      "terminalCacheLabel": "Cache",
+      "terminalReasoningLabel": "Reasoning",
+      "terminalReasoningValue": "medium"
+    },
+    "autonomy": {
+      "title": "Built for autonomous agents and long-running work",
+      "description": "CoStrict CLI can continuously analyze, modify, execute, test, fix, and retest in an executable feedback loop. With version control, error recovery, permission boundaries, and observability, it is suited to long-running, complex, and automated tasks.",
+      "controlsLabel": "Autonomous execution, task state, and safety boundaries",
+      "loop": {
+        "label": "Autonomous execution loop",
+        "title": "Analyze → modify → execute → test → fix → retest",
+        "description": "The CLI Agent uses real tools from static analysis through testing, builds, and deployment. Each step responds to real feedback from the one before it, adapting without requiring manual confirmation at every turn.",
+        "workflow": {
+          "title": "Development flow",
+          "running": "Running",
+          "stages": {
+            "analyze": {
+              "label": "ANALYZE",
+              "title": "Analyze project",
+              "description": "Locate related context"
+            },
+            "modify": {
+              "label": "MODIFY",
+              "title": "Modify code",
+              "description": "Apply focused changes"
+            },
+            "verify": {
+              "label": "VERIFY",
+              "title": "Run validation",
+              "description": "Check real feedback"
+            }
+          }
+        }
+      },
+      "state": {
+        "label": "Long-task state management",
+        "title": "Long tasks stay on course",
+        "description": "Built-in checkpoints, logs, and rollback keep long-running tasks visible, pausable, and resumable. When an error occurs, return quickly to a known stable state.",
+        "progressLabel": "Task in progress",
+        "running": "Running",
+        "steps": {
+          "context": {
+            "label": "Read project context",
+            "completedLabel": "Project context loaded"
+          },
+          "scope": {
+            "label": "Analyze change scope",
+            "completedLabel": "Related modules located"
+          },
+          "plan": {
+            "label": "Generate change plan",
+            "completedLabel": "Change plan confirmed"
+          },
+          "modify": {
+            "label": "Apply code changes",
+            "completedLabel": "Related files updated"
+          },
+          "test": {
+            "label": "Run verification tests",
+            "completedLabel": "Verification tests passed"
+          },
+          "checkpoint": {
+            "label": "Save recovery state",
+            "completedLabel": "CHECKPOINT created"
+          }
+        }
+      },
+      "security": {
+        "label": "Safety and permission control",
+        "title": "Autonomous operation within safe boundaries",
+        "description": "Use sandbox isolation, command allowlists, least-privilege permissions, and audit logs. The Agent requests confirmation before risky actions, while human checkpoints keep automation effective and controllable.",
+        "visual": {
+          "title": "Execution permissions",
+          "status": "Guardrails active",
+          "gatedHint": "Release actions request confirmation before execution"
+        },
+        "permissions": {
+          "read": {
+            "label": "Project files",
+            "status": "Allowed"
+          },
+          "run": {
+            "label": "Run tests",
+            "status": "Allowed"
+          },
+          "change": {
+            "label": "Change code",
+            "status": "Allowed"
+          },
+          "release": {
+            "label": "Release actions",
+            "status": "Confirm"
+          }
+        }
+      },
+      "integration": {
+        "label": "Deep toolchain integration",
+        "title": "Fits your development environment",
+        "description": "Connect Git, LSP, test frameworks, build systems, and CI pipelines. It does more than run commands: it understands code structure and project context, then works with your tools like an experienced engineer.",
+        "visual": {
+          "title": "Toolchain connected",
+          "status": "Syncing",
+          "contextTitle": "Project context",
+          "context": {
+            "repository": "Repository and branch",
+            "symbols": "Code structure",
+            "tests": "Test feedback"
+          }
+        },
+        "tools": {
+          "git": "Git",
+          "lsp": "LSP",
+          "test": "Test",
+          "ci": "CI"
+        }
+      },
+      "scenarios": {
+        "title": "Typical CLI scenarios",
+        "items": {
+          "refactor": {
+            "title": "Cross-file refactors",
+            "description": "Make changes, run the full suite, and address regressions until all tests pass."
+          },
+          "upgrade": {
+            "title": "Dependency upgrades",
+            "description": "Update versions, repair API changes, then validate builds and deployment paths."
+          },
+          "migration": {
+            "title": "Bulk code migrations",
+            "description": "Apply consistent rule changes across large codebases and fix the errors they introduce."
+          },
+          "ciFix": {
+            "title": "CI auto-fixes",
+            "description": "After a test fails, try a repair and send a patch to speed up the merge flow."
+          }
+        }
+      }
+    },
+    "install": {
+      "universalLabel": "Works on macOS, Linux, and Windows",
+      "supportEyebrow": "Install options",
+      "title": "Other ways to install and start",
+      "subtitle": "Use npm, verify the version or start in a project.",
+      "platformLabel": "Choose your OS",
+      "alternativeLabel": "Install with npm",
+      "verifyLabel": "Verify install",
+      "startupLabel": "Start in a project",
+      "step1": {
+        "title": "Copy the command",
+        "desc": "Choose your system and copy the recommended install command above."
+      },
+      "step2": {
+        "title": "Verify and sign in",
+        "desc": "Run cs --version to confirm the install, then start csc and follow the onboarding to sign in."
+      },
+      "step3": {
+        "title": "Enter a project",
+        "desc": "Run csc at your project root and start your first task."
+      },
+      "docsTip": "For more details and updates, see the",
+      "docsLink": "documentation"
+    },
+    "faq": {
+      "title": "FAQ",
+      "subtitle": "Common questions about installing and using CoStrict CLI.",
+      "q1": "How can I install CoStrict CLI?",
+      "a1": "On Windows, Linux, and macOS, use npm install -g {'@'}costrict/csc --registry=https://registry.npmjs.org/. See the documentation for environment requirements and usage details.",
+      "q2": "Which operating systems are supported?",
+      "a2": "Windows 10 and above, Linux (x86_64 / ARM64) and macOS 10.15+ (Intel / Apple Silicon), plus container environments. On Windows we recommend Windows Terminal; on macOS and Linux, the system terminal or your editor's integrated terminal works fine.",
+      "q3": "How do I start the CLI after installing?",
+      "a3": "Run csc in your terminal to start. You can verify the installation with cs --version. After the onboarding on first launch, run it at your project root to start a task.",
+      "q4": "What's the difference between the CLI and the IDE plugins?",
+      "a4": "The CLI reads project files, runs commands and tests directly in your terminal. The IDE plugins put related actions and change review inside the editor interface. Choose the entry point that fits your current environment."
+    },
+    "finalCta": {
+      "title": "Ready to let CoStrict CLI take over your development loop?",
+      "description": "Get started and experience closed-loop development.",
+      "primary": "Get started",
+      "secondary": "Explore IDE plugins",
+      "ideCross": "Prefer working in your editor? Check out the IDE plugins"
+    }
+  },
   "footer": {
     "openSource": {
       "title": "Open Source and Free",
@@ -446,13 +671,12 @@
     "cliStep1OsTitle": "Operating System",
     "cliStep1OsWindows": "Windows 10 and above",
     "cliStep1OsLinux": "Kernel version 4.0 and above, supports x86_64 / ARM64 architectures; for other domestic operating systems, please contact technical support to confirm compatibility",
-    "cliStep1OsMacOS": "macOS 10.15 and above stable versions, supports Intel x86_64 and Apple Silicon ARM64 architectures",
+    "cliStep1OsMacOS": "Supports mainstream stable versions",
     "cliStep1OsContainer": "Host kernel running containers should be 4.0 or above",
     "cliStep1OsContainerLabel": "Container Environment:",
     "cliStep1TerminalTitle": "Terminal (TUI Mode)",
     "cliStep1TerminalWindows": "Recommended: Windows Terminal or electerm",
     "cliStep1TerminalUnix": "System built-in terminal or VS Code integrated terminal",
-    "cliStep1OsMacOS": "Supports mainstream stable versions",
     "cliStep1WebModeTitle": "Alternative (WEB Mode)",
     "cliStep1WebModeContent": "If there are compatibility issues with the TUI interface, you can switch to WEB mode. No terminal environment required, only need to ensure the host network is normal and can access browsers (Chrome/Firefox/Edge and other mainstream browsers).",
     "cliStep2Title": "Installation",
@@ -462,8 +686,8 @@
     "cliStep2CommentInstall": "Install CoStrict CLI",
     "cliStep2CommentVerify": "Verify Installation",
     "cliStep2DocLink": "Installation Guide",
-    "installMethodCurl": "One-click Install",
-    "installMethodNpm": "npm Install",
+    "installMethodCurl": "Shell",
+    "installMethodNpm": "npm",
     "cliStep3Title": "Permission Issues Resolution (Optional)",
     "cliStep3Desc": "If you encounter permission errors when running npm install -g, try the following solutions:",
     "cliStep3Option1Title": "Option 1: Use nvm to manage Node.js (Recommended)",
@@ -487,8 +711,6 @@
     "platformWindowsNote": "Requires Windows 10+. Recommended: Windows Terminal or PowerShell.",
     "installMethodRecommended": "Recommended",
     "installMethodAlternative": "Alternative",
-    "installMethodCurl": "Shell",
-    "installMethodNpm": "npm",
     "installMethodPowershell": "PowerShell",
     "cliPermissionStepsTitle": "Permission Issue Solutions",
     "cliPermissionStep1Title": "Solution 1",
@@ -553,20 +775,33 @@
         "expansionTitle": "Expanded model capabilities",
         "expansionCaption": "Coverage for different engineering tasks and scenarios",
         "newLabel": "New",
-        "spectrum": { "daily": "Daily coding", "analysis": "Analysis", "enterprise": "Enterprise" },
+        "spectrum": {
+          "daily": "Daily coding",
+          "analysis": "Analysis",
+          "enterprise": "Enterprise"
+        },
         "libraryAria": "Models already supported by CoStrict",
         "libraryEyebrow": "More available models",
         "libraryTitle": "CoStrict model ecosystem",
         "guideEyebrow": "Model guide",
         "guideTitle": "Choose one model or combine several for different tasks and scenarios",
         "scenarios": [
-          { "title": "Daily coding", "description": "Faster responses for efficient development" },
+          {
+            "title": "Daily coding",
+            "description": "Faster responses for efficient development"
+          },
           {
             "title": "Complex code analysis",
             "description": "Stronger reasoning for demanding engineering problems"
           },
-          { "title": "Enterprise development", "description": "Stable, secure, and controllable" },
-          { "title": "Image to code", "description": "Supports image input" }
+          {
+            "title": "Enterprise development",
+            "description": "Stable, secure, and controllable"
+          },
+          {
+            "title": "Image to code",
+            "description": "Supports image input"
+          }
         ]
       },
       "product": {
@@ -598,25 +833,44 @@
             "label": "Enterprise development",
             "title": "Closer to enterprise engineering",
             "description": "Connect Cloud and remote CLI across requirements, coding, testing, and review, with defense in depth for core code.",
-            "tags": ["Cloud access", "Remote CLI", "Closed-loop workflow", "Defense in depth"]
+            "tags": [
+              "Cloud access",
+              "Remote CLI",
+              "Closed-loop workflow",
+              "Defense in depth"
+            ]
           },
           "knowledge": {
             "label": "Organizational knowledge",
             "title": "Help engineering organizations evolve",
             "description": "Build an enterprise knowledge base and share team skills so individual experience becomes reusable engineering knowledge.",
-            "tags": ["Knowledge base", "Skills marketplace", "Organization memory"]
+            "tags": [
+              "Knowledge base",
+              "Skills marketplace",
+              "Organization memory"
+            ]
           },
           "metrics": {
             "label": "Efficiency measurement",
             "title": "Multi-level AI Coding dashboards",
             "description": "Measure AI activity, code acceptance, and generated-code share across company, department, team, and individual views.",
-            "tags": ["Company", "Department", "Team", "Individual"]
+            "tags": [
+              "Company",
+              "Department",
+              "Team",
+              "Individual"
+            ]
           },
           "collaboration": {
             "label": "Collaboration model",
             "title": "More efficient human-agent collaboration",
             "description": "Embed agents into delivery workflows to handle repetitive tasks while people retain review of key decisions.",
-            "tags": ["Code", "Review", "Test", "Deploy"]
+            "tags": [
+              "Code",
+              "Review",
+              "Test",
+              "Deploy"
+            ]
           }
         }
       },

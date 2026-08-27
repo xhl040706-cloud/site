@@ -399,6 +399,231 @@
       ]
     }
   },
+  "cli": {
+    "meta": {
+      "title": "CoStrict CLI — 把研发任务交给终端里的 AI",
+      "description": "CoStrict CLI 在命令行中结合项目上下文完成分析、开发与验证。支持 macOS、Linux、Windows，npm 或官方脚本一键安装。"
+    },
+    "hero": {
+      "eyebrow": "CoStrict CLI",
+      "title": "把研发任务，直接交给终端里的 AI",
+      "description": "在当前项目目录中，让 AI 读取代码、修改文件、运行命令，并把结果留在终端里。",
+      "installCta": "复制安装命令",
+      "docsCta": "查看文档",
+      "terminalHint": "输入你的第一个研发任务",
+      "terminalInstalled": "安装完成",
+      "terminalProjectLabel": "项目",
+      "terminalProjectValue": "~/work/costrict-site",
+      "terminalStatusLabel": "状态",
+      "terminalStatusValue": "已登录 · 项目上下文已载入",
+      "terminalLastLogin": "Last login: Mon Aug 10 10:18:59 on console",
+      "terminalVersionLabel": "版本",
+      "terminalVersionValue": "CoStrict CLI v4.2.30",
+      "terminalModelLabel": "模型",
+      "terminalModelValue": "GLM-5.3-Zhipu · CoStrict",
+      "terminalAccountLabel": "账户",
+      "terminalAccountValue": "developer · workspace",
+      "terminalMessageLabel": "消息",
+      "terminalMessageValue": "输入 /help 查看命令，输入 ? 查看快捷键",
+      "terminalYouLabel": "你",
+      "terminalTaskPrompt": "修复登录状态偶发失效，并运行相关测试",
+      "terminalTaskResponseOne": "我先检查认证状态与相关测试，确认当前项目的登录实现。",
+      "terminalTaskReceiptOne": "Read 3 files, searched auth (ctrl+o 展开)",
+      "terminalTaskResponseTwo": "已定位并处理刷新 token 的并发覆盖问题。",
+      "terminalTaskReceiptTwo": "Updated 2 files · 18 tests passed",
+      "terminalTaskTwoPrompt": "为请求重试补齐边界用例，并运行测试",
+      "terminalTaskTwoResponseOne": "我先检查重试条件、超时处理和已有测试覆盖。",
+      "terminalTaskTwoReceiptOne": "Read 4 files, ran 6 focused tests (ctrl+o 展开)",
+      "terminalTaskTwoResponseTwo": "已补齐超时与取消请求的边界用例。",
+      "terminalTaskTwoReceiptTwo": "Updated 3 files · 24 tests passed",
+      "terminalTaskThreePrompt": "检查本次改动，并运行发布前验证",
+      "terminalTaskThreeResponseOne": "我会核对修改范围、类型检查和构建结果。",
+      "terminalTaskThreeReceiptOne": "Read git diff, ran type-check (ctrl+o 展开)",
+      "terminalTaskThreeResponseTwo": "已完成验证，未发现阻塞发布的问题。",
+      "terminalTaskThreeReceiptTwo": "Type check passed · build completed",
+      "terminalContextLabel": "上下文",
+      "terminalCacheLabel": "缓存",
+      "terminalReasoningLabel": "推理强度",
+      "terminalReasoningValue": "中"
+    },
+    "autonomy": {
+      "title": "天然适合 Agent 自主工作，为长程任务而生",
+      "description": "CoStrict CLI 可以在一个可执行、可反馈的工作循环中连续完成分析、修改、执行、测试、修复和再测试，在具备版本控制、错误恢复、权限约束和可观测性的前提下，特别适合长任务、复杂任务和自动化任务。",
+      "controlsLabel": "自主执行、状态管理与安全边界",
+      "loop": {
+        "label": "自主执行闭环",
+        "title": "分析 → 修改 → 执行 → 测试 → 修复 → 再测试",
+        "description": "CLI Agent 能调用真实工具链，从静态分析到运行测试，从构建到部署，每一步都基于上一步的真实反馈，自动调整策略，不依赖人工逐步确认。",
+        "workflow": {
+          "title": "研发流程",
+          "running": "运行中",
+          "stages": {
+            "analyze": {
+              "label": "ANALYZE",
+              "title": "分析项目",
+              "description": "定位相关上下文"
+            },
+            "modify": {
+              "label": "MODIFY",
+              "title": "修改代码",
+              "description": "应用聚焦变更"
+            },
+            "verify": {
+              "label": "VERIFY",
+              "title": "运行验证",
+              "description": "检查真实反馈"
+            }
+          }
+        }
+      },
+      "state": {
+        "label": "长任务状态管理",
+        "title": "长任务不迷航",
+        "description": "内置 checkpoint、日志记录与回滚机制，即使任务运行数小时，也能清晰追踪进度、随时暂停或恢复，出现错误可快速回退到稳定状态。",
+        "progressLabel": "任务进行中",
+        "running": "执行中",
+        "steps": {
+          "context": {
+            "label": "读取项目上下文",
+            "completedLabel": "项目上下文已载入"
+          },
+          "scope": {
+            "label": "分析修改范围",
+            "completedLabel": "已定位相关模块"
+          },
+          "plan": {
+            "label": "生成变更方案",
+            "completedLabel": "修改方案已确认"
+          },
+          "modify": {
+            "label": "执行代码修改",
+            "completedLabel": "相关文件已更新"
+          },
+          "test": {
+            "label": "运行验证测试",
+            "completedLabel": "验证测试已通过"
+          },
+          "checkpoint": {
+            "label": "保存可恢复状态",
+            "completedLabel": "CHECKPOINT 已创建"
+          }
+        }
+      },
+      "security": {
+        "label": "安全与权限控制",
+        "title": "在安全的边界内自主运行",
+        "description": "支持沙箱隔离、命令白名单、权限最小化和审计日志。Agent 在执行危险操作前会请求确认，关键节点可设置人工介入点，让自动化既高效又可控。",
+        "visual": {
+          "title": "执行权限",
+          "status": "安全边界已启用",
+          "gatedHint": "发布操作将在执行前请求确认"
+        },
+        "permissions": {
+          "read": {
+            "label": "项目文件",
+            "status": "允许"
+          },
+          "run": {
+            "label": "运行测试",
+            "status": "允许"
+          },
+          "change": {
+            "label": "修改代码",
+            "status": "允许"
+          },
+          "release": {
+            "label": "发布操作",
+            "status": "需确认"
+          }
+        }
+      },
+      "integration": {
+        "label": "深度工具链集成",
+        "title": "融入你的开发环境",
+        "description": "无缝对接 Git、LSP、测试框架、构建系统与 CI 流水线，不仅执行命令，还能理解代码结构和项目上下文，像资深工程师一样使用工具。",
+        "visual": {
+          "title": "工具链连接",
+          "status": "同步中",
+          "contextTitle": "项目上下文",
+          "context": {
+            "repository": "仓库与分支",
+            "symbols": "代码结构",
+            "tests": "测试反馈"
+          }
+        },
+        "tools": {
+          "git": "Git",
+          "lsp": "LSP",
+          "test": "测试",
+          "ci": "CI"
+        }
+      },
+      "scenarios": {
+        "title": "CLI 典型场景",
+        "items": {
+          "refactor": {
+            "title": "跨文件重构",
+            "description": "自动修改并运行全量测试，处理回归，直到所有测试通过。"
+          },
+          "upgrade": {
+            "title": "依赖升级",
+            "description": "更新依赖版本，修复 API 变更，验证构建与部署流程。"
+          },
+          "migration": {
+            "title": "批量代码迁移",
+            "description": "对大型代码库执行一致的规则变更，并自动修复引入的错误。"
+          },
+          "ciFix": {
+            "title": "CI 自动修复",
+            "description": "测试失败后自动尝试修复并推送补丁，加速合并流程。"
+          }
+        }
+      }
+    },
+    "install": {
+      "universalLabel": "所有平台通用",
+      "supportEyebrow": "安装补充",
+      "title": "其他安装与使用方式",
+      "subtitle": "npm、版本验证和项目启动。",
+      "platformLabel": "选择操作系统",
+      "alternativeLabel": "npm 安装",
+      "verifyLabel": "验证安装",
+      "startupLabel": "在项目中启动",
+      "step1": {
+        "title": "复制命令",
+        "desc": "选择当前系统，复制上方推荐安装命令。"
+      },
+      "step2": {
+        "title": "验证并登录",
+        "desc": "运行 cs --version 出现版本号即安装成功；首次运行 csc 按引导完成账号配置。"
+      },
+      "step3": {
+        "title": "进入项目",
+        "desc": "在项目根目录运行 csc，开始你的第一个任务。"
+      },
+      "docsTip": "更多细节与更新说明，请查看",
+      "docsLink": "说明文档"
+    },
+    "faq": {
+      "title": "常见问题",
+      "subtitle": "关于安装与使用 CoStrict CLI 的常见问题。",
+      "q1": "CoStrict CLI 支持哪些安装方式？",
+      "a1": "Windows、Linux 与 macOS 均可使用 npm install -g {'@'}costrict/csc --registry=https://registry.npmjs.org/ 安装。具体环境要求与使用说明见说明文档。",
+      "q2": "支持哪些操作系统？",
+      "a2": "支持 Windows 10 及以上、Linux（x86_64 / ARM64）与 macOS 10.15 及以上（Intel / Apple Silicon），也可以在容器环境中运行。Windows 建议使用 Windows Terminal，macOS / Linux 使用系统终端或编辑器集成终端即可。",
+      "q3": "安装后如何启动？",
+      "a3": "在终端运行 csc 即可启动；cs --version 可以验证安装是否成功。首次启动按引导完成账号配置后，进入项目根目录即可开始任务。",
+      "q4": "CLI 与 IDE 插件有什么区别？",
+      "a4": "CLI 直接在终端中读取项目文件、执行命令与运行测试；IDE 插件则把相关操作与修改审阅放在编辑器界面中。可根据当前工作环境选择入口。"
+    },
+    "finalCta": {
+      "title": "准备好让 CoStrict CLI 接管你的开发循环了吗？",
+      "description": "立即开始，体验闭环开发的力量。",
+      "primary": "立即开始",
+      "secondary": "了解 IDE 插件",
+      "ideCross": "更喜欢在编辑器中工作？了解 IDE 插件"
+    }
+  },
   "footer": {
     "openSource": {
       "title": "开源开放",
@@ -461,10 +686,8 @@
     "cliStep2CommentInstall": "安装 CoStrict CLI",
     "cliStep2CommentVerify": "验证安装",
     "cliStep2DocLink": "安装文档",
-    "installMethodCurl": "一键安装",
-    "installMethodNpm": "npm安装",
-    "cliStep3Title": "权限问题解决（可选)",
-    "cliStep2SubContent": "在终端中运行以下命令安装 CoStrict CLI 工具，如遇问题请参考 {link}",
+    "installMethodCurl": "Shell",
+    "installMethodNpm": "npm",
     "cliStep3Title": "权限问题解决（可选）",
     "cliStep3Desc": "如果在执行 npm install -g 时遇到权限错误，可以尝试以下解决方案：",
     "cliStep3Option1Title": "方案 1：使用 nvm 管理 Node.js（推荐）",
@@ -488,8 +711,6 @@
     "platformWindowsNote": "需要 Windows 10 及以上版本。推荐使用 Windows Terminal 或 PowerShell。",
     "installMethodRecommended": "推荐",
     "installMethodAlternative": "备选",
-    "installMethodCurl": "Shell",
-    "installMethodNpm": "npm",
     "installMethodPowershell": "PowerShell",
     "cliPermissionStepsTitle": "权限不足的解决方案",
     "cliPermissionStep1Title": "方案 1",
@@ -565,10 +786,22 @@
         "guideEyebrow": "模型推荐",
         "guideTitle": "根据不同任务、不同场景，选择一种或多种模型组合",
         "scenarios": [
-          { "title": "日常编码", "description": "响应更快，提升开发效率" },
-          { "title": "复杂代码分析", "description": "更强推理，解决复杂研发问题" },
-          { "title": "企业级开发", "description": "更稳定、安全可控" },
-          { "title": "图片转代码", "description": "支持图片输入" }
+          {
+            "title": "日常编码",
+            "description": "响应更快，提升开发效率"
+          },
+          {
+            "title": "复杂代码分析",
+            "description": "更强推理，解决复杂研发问题"
+          },
+          {
+            "title": "企业级开发",
+            "description": "更稳定、安全可控"
+          },
+          {
+            "title": "图片转代码",
+            "description": "支持图片输入"
+          }
         ]
       },
       "product": {
@@ -580,9 +813,18 @@
         "overview": {
           "title": "研发全链路升级",
           "items": {
-            "enterprise": { "title": "企业研发", "description": "多形态接入与纵深安全" },
-            "organization": { "title": "组织进化", "description": "知识沉淀与效能衡量" },
-            "collaboration": { "title": "人机协作", "description": "Agent 融入交付流程" }
+            "enterprise": {
+              "title": "企业研发",
+              "description": "多形态接入与纵深安全"
+            },
+            "organization": {
+              "title": "组织进化",
+              "description": "知识沉淀与效能衡量"
+            },
+            "collaboration": {
+              "title": "人机协作",
+              "description": "Agent 融入交付流程"
+            }
           }
         },
         "humanReview": "人工审核",
@@ -591,25 +833,44 @@
             "label": "企业级开发场景",
             "title": "更贴近企业级开发",
             "description": "连接 Cloud 与远程 CLI，串联需求、编码、测试和审查，以纵深安全守护核心代码。",
-            "tags": ["Cloud 云端", "远程 CLI", "全流程闭环", "纵深安全"]
+            "tags": [
+              "Cloud 云端",
+              "远程 CLI",
+              "全流程闭环",
+              "纵深安全"
+            ]
           },
           "knowledge": {
             "label": "组织知识",
             "title": "助力研发组织持续进化",
             "description": "沉淀企业知识库、共享团队技能，\n让个人经验成为组织可复用的研发资产。",
-            "tags": ["企业知识库", "技能市场", "组织沉淀"]
+            "tags": [
+              "企业知识库",
+              "技能市场",
+              "组织沉淀"
+            ]
           },
           "metrics": {
             "label": "效能衡量",
             "title": "多层级 AI Coding 数据看板",
             "description": "从公司、部门、团队到个人，统一衡量 AI 活跃度、代码采纳率与自动生成占比。",
-            "tags": ["公司", "部门", "团队", "个人"]
+            "tags": [
+              "公司",
+              "部门",
+              "团队",
+              "个人"
+            ]
           },
           "collaboration": {
             "label": "协作方式",
             "title": "更高效的人机协作",
             "description": "将 Agent 嵌入研发交付流程，自动承接重复任务，关键决策仍由人审核。",
-            "tags": ["编码", "评审", "测试", "发布"]
+            "tags": [
+              "编码",
+              "评审",
+              "测试",
+              "发布"
+            ]
           }
         }
       },
