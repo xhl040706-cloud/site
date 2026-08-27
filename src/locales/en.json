@@ -47,7 +47,7 @@
         "titleLine2": "for organization-wide R&D",
         "subtitle": "Bring AI into real R&D workflows and turn individual productivity into reusable, governable organizational capability",
         "download": "Download",
-        "tryOnline": "Enter Web"
+        "tryOnline": "Enter Cloud"
       },
       "products": {
         "title": "One CoStrict, across every R&D environment",
@@ -56,7 +56,7 @@
           "name": "CoStrict Cloud",
           "title": "Manage AI R&D workspaces in the cloud",
           "description": "Connect remote development environments and preserve project context so AI coding work moves seamlessly across devices.",
-          "action": "Enter Web",
+          "action": "Enter Cloud",
           "demoPrompt": "Help me generate a TodoList.",
           "builderTitle": "What do you want to build today?",
           "builderSubtitle": "Start a new session in the current workspace and directory.",
@@ -201,7 +201,7 @@
       "finalCta": {
         "title": "Turn individual AI efficiency into organizational R&D capability",
         "description": "From individual development to team collaboration, keep knowledge, Agents, and R&D practices compounding and reusable.",
-        "primary": "Enter Web",
+        "primary": "Enter Cloud",
         "secondary": "Download CoStrict"
       },
       "footer": {

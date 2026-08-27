@@ -47,7 +47,7 @@
         "titleLine2": "AI 研发基础设施",
         "subtitle": "让 AI 进入真实研发流程，把个人效率转化为可复用、可治理的组织研发能力",
         "download": "下载",
-        "tryOnline": "进入 Web"
+        "tryOnline": "进入 Cloud"
       },
       "products": {
         "title": "同一套 CoStrict，融入不同研发环境",
@@ -56,7 +56,7 @@
           "name": "CoStrict Cloud",
           "title": "云端研发空间",
           "description": "连接远程开发环境，让 AI Coding 工作跨设备无缝流转。",
-          "action": "进入 Web",
+          "action": "进入 Cloud",
           "demoPrompt": "帮我生成一个TodoList。",
           "builderTitle": "今天想构建什么?",
           "builderSubtitle": "在当前工作空间和目录中开启新的会话。",
@@ -201,7 +201,7 @@
       "finalCta": {
         "title": "把个人 AI 效率，转化为组织研发能力",
         "description": "从个人开发到团队协同，让知识、Agent 与研发实践持续沉淀和复用。",
-        "primary": "进入 Web",
+        "primary": "进入 Cloud",
         "secondary": "下载 CoStrict"
       },
       "footer": {
