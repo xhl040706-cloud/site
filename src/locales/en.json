@@ -1011,5 +1011,141 @@
     "learnMore": "Learn more about package details",
     "billingDescription": "Package & Billing Description",
     "activityLink": "Participate in activities to get more Credits"
+  },
+  "ide": {
+    "meta": {
+      "title": "CoStrict IDE plugins — close the AI coding loop in your editor",
+      "description": "CoStrict plugins for Visual Studio Code and JetBrains use project context to analyze, edit across files, test, and present every change for review."
+    },
+    "hero": {
+      "eyebrow": "CoStrict IDE",
+      "title": "AI Coding, end to end, inside your editor",
+      "titleLine1": "AI Coding, end to end",
+      "titleLine2": "inside your editor",
+      "description": "Understand code, generate changes, review diffs, and execute tasks in VS Code or JetBrains without switching tools.",
+      "primaryCta": "Download plugin",
+      "editorMenuLabel": "Choose your editor",
+      "installPlugin": "Install plugin",
+      "supportedEditors": "Supports VS Code and JetBrains",
+      "vscodeCta": "Download for VS Code",
+      "jetbrainsCta": "JetBrains plugin",
+      "compatibility": "Supports VS Code 1.93+ · JetBrains 2023.3+",
+      "installHelpCta": "View installation guide",
+      "installCta": "Download now",
+      "installGuide": "View full installation steps",
+      "docsCta": "Read the docs",
+      "ready": "Connected",
+      "imageAlt": "The CoStrict IDE plugin running in a code editor",
+      "contextChip": "Context loaded",
+      "diffChip": "Changes to review",
+      "files": "files"
+    },
+    "workflow": {
+      "title": "Bring AI into development and carry tasks through to delivery",
+      "subtitle": "AI does more than answer. It understands related code, makes the change, and returns verified results in an editor environment that stays visible and under your control.",
+      "zones": {
+        "interaction": {
+          "label": "Human-Agent interaction",
+          "title": "Choose a mode and model, then start the task",
+          "description": "Tell the Coding Agent what you need in natural language, add requirements as you go, and keep the collaboration continuous."
+        },
+        "agent": {
+          "label": "Agent workspace",
+          "title": "Track progress, manage execution, and step in anytime",
+          "description": "Follow the Agent's progress and execution status in real time, then add requirements or adjust direction whenever needed."
+        },
+        "changes": {
+          "label": "Code changes",
+          "title": "Inspect code and changes as results land in your project",
+          "description": "Generated code, file changes, and run results appear directly in the current project, ready to inspect, verify, and refine."
+        }
+      },
+      "demo": {
+        "videoLabel": "CoStrict IDE task demo in English",
+        "local": "Local workspace",
+        "taskLabel": "Token refresh issue",
+        "example": "Real task example",
+        "taskTitle": "Prevent duplicate token refreshes",
+        "taskPrompt": "Prevent concurrent requests from calling the refresh endpoint more than once when the access token expires, clear the session on refresh failure, and add regression tests.",
+        "relevantFiles": "related files",
+        "projectRule": "project rule",
+        "expectedTests": "expected tests",
+        "videoPlaceholder": "Demo video to be added",
+        "videoSpec": "1719 × 1080 MP4 · 29 sec",
+        "play": "Play task walkthrough",
+        "pause": "Pause task walkthrough",
+        "seek": "Seek through the video",
+        "fullscreen": "Watch video in fullscreen",
+        "exitFullscreen": "Exit fullscreen",
+        "selection": "Current selection",
+        "selectTitle": "The task starts beside the code",
+        "selectDesc": "No copying file contents into a chat. Your selection and open project are already the starting point.",
+        "prompt": "Task",
+        "promptText": "Prevent duplicate token refreshes and add regression tests",
+        "context": "Context",
+        "contextTitle": "Bring in only what matters",
+        "contextDesc": "CoStrict connects the current file, call path, and tests to reduce omissions without flooding the task with noise.",
+        "current": "Current",
+        "related": "Related",
+        "test": "Test",
+        "changes": "Making changes",
+        "changeTitle": "Update the full path in one pass",
+        "changeDesc": "Implementation, callers, and tests move together, with a clear file-level summary.",
+        "review": "Human decision",
+        "reviewTitle": "See the result before applying it",
+        "reviewDesc": "Every diff and test result remains visible, while you retain control over the final action.",
+        "testsPassed": "Related tests passed",
+        "filesChanged": "files changed",
+        "reject": "Keep refining",
+        "apply": "Apply all"
+      }
+    },
+    "codeReview": {
+      "title": "Keep code quality in check as you write",
+      "description": "CoStrict brings professional code review directly into your IDE. Whether it is a newly written function, the current file, or a multi-file change in your current commit, start a review with a single right-click. The Agent analyzes the code in context, quickly surfaces potential issues, and provides professional, actionable recommendations, so every change gets a thorough review before you commit.",
+      "videoLabel": "CoStrict IDE code review demo in English"
+    },
+    "capabilities": {
+      "title": "No model lock-in. Extend without limits.",
+      "model": {
+        "label": "Model ecosystem",
+        "title": "Choose from leading model providers",
+        "listLabel": "Supported model providers",
+        "enterpriseApi": "Enterprise model service",
+        "apiTitle": "Compatible with third-party APIs and enterprise model services",
+        "apiDescription": "Connect third-party APIs or existing enterprise model services, so every developer can choose the model and provider that fits the task."
+      },
+      "agent": {
+        "label": "Agent extensions",
+        "title": "Compose capabilities for every workflow",
+        "capabilityLabel": "Extension capabilities",
+        "modeLabel": "Work modes",
+        "description": "Multiple tools x multiple work modes, from coding to prototyping, fit every R&D task."
+      }
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "Frequently asked questions",
+      "subtitle": "Common questions about installing and using the CoStrict IDE plugins.",
+      "q1": "Which editors does CoStrict support?",
+      "a1": "CoStrict currently supports Visual Studio Code 1.93.0 and later, plus JetBrains 2023.3 and later IDEs including IntelliJ IDEA, WebStorm, PyCharm, and GoLand.",
+      "q2": "Should I choose the IDE plugin or the CLI?",
+      "a2": "Choose the IDE plugin when you want to work beside the code, review diffs, and apply changes visually. Choose the CLI when your workflow is terminal-first or you need more direct command and automation execution.",
+      "q3": "Will the AI overwrite my code automatically?",
+      "a3": "The core flow shown here presents changes as files and diffs for your review before applying them. For important projects, continue using Git branches and your existing code review process as the recovery path.",
+      "q4": "Can an enterprise use its own models and service URL?",
+      "a4": "CoStrict supports private enterprise deployments. Sign in with the service URL provided by your administrator; exact model, permission, and knowledge settings depend on your deployment.",
+      "q5": "Can the plugin understand an entire project?",
+      "a5": "The plugin combines the current file, selection, and relevant project context for a task. Actual access depends on the workspace, enterprise permissions, and configuration, so generated results should always be reviewed.",
+      "q6": "Can I use it with CoStrict Cloud?",
+      "a6": "Yes. The IDE plugins and CoStrict Cloud can share project context, allowing you to continue the same engineering task between the editor and browser."
+    },
+    "finalCta": {
+      "eyebrow": "CoStrict Plugin",
+      "title": "Stay in your editor and finish the next engineering task",
+      "description": "Let AI understand the project and make the change, while the final decision stays with you.",
+      "primary": "Install the IDE plugin",
+      "secondary": "Learn about CLI"
+    }
   }
 }

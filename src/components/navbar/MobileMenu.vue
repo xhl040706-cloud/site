@@ -162,18 +162,23 @@ const productOptions = computed<ProductMenuOption[]>(() => [
   {
     label: t('productMenu.cliTitle'),
     key: 'cli',
-    route: { name: 'download', query: { product: 'cli', tab: 'cli' } },
+    route: { name: 'CliIndex' },
   },
   {
     label: t('productMenu.ideTitle'),
     key: 'ide',
-    route: { name: 'download', query: { product: 'ide', tab: 'vscode' } },
+    route: { name: 'IdeIndex' },
   },
 ])
 
 const isActive = (key: string) => {
   if (key === 'product') {
-    return currentRouteName.value === 'cloud' || ['cli', 'ide'].includes(currentProductKey.value)
+    return (
+      currentRouteName.value === 'cloud' ||
+      currentRouteName.value === 'CliIndex' ||
+      currentRouteName.value === 'IdeIndex' ||
+      ['cli', 'ide'].includes(currentProductKey.value)
+    )
   }
   if (key === 'download') {
     return currentRouteName.value === 'download' && !currentProductKey.value
@@ -219,10 +224,7 @@ const handleProductSelect = (item: ProductMenuOption) => {
 }
 
 const isProductActive = (item: ProductMenuOption) => {
-  if (item.key === 'cloud') {
-    return currentRouteName.value === item.route.name
-  }
-  return currentRouteName.value === 'download' && currentProductKey.value === item.key
+  return currentRouteName.value === item.route.name
 }
 
 const handleLangSelect = (key: string) => {

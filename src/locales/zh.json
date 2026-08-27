@@ -1026,5 +1026,141 @@
     "pagination": {
       "total": "第 {start}-{end} 篇，共 {total} 篇"
     }
+  },
+  "ide": {
+    "meta": {
+      "title": "CoStrict IDE 插件 — 在编辑器里完成 AI Coding 闭环",
+      "description": "CoStrict IDE 插件支持 Visual Studio Code 与 JetBrains，在编辑器内结合项目上下文完成分析、多文件修改、测试与差异审阅。"
+    },
+    "hero": {
+      "eyebrow": "CoStrict插件",
+      "title": "在熟悉的 IDE 里，完成 AI Coding 闭环",
+      "titleLine1": "在熟悉的 IDE 里，",
+      "titleLine2": "完成 AI Coding 闭环",
+      "description": "无需切换工具，在 VS Code 与 JetBrains 中完成代码理解、生成修改、Diff 审阅与任务执行。",
+      "primaryCta": "下载插件",
+      "editorMenuLabel": "选择你的编辑器",
+      "installPlugin": "安装插件",
+      "supportedEditors": "支持 VS Code 与 JetBrains",
+      "vscodeCta": "下载 VS Code 插件",
+      "jetbrainsCta": "JetBrains 插件",
+      "compatibility": "支持 VS Code 1.93+ · JetBrains 2023.3+",
+      "installHelpCta": "查看安装指南",
+      "installCta": "立即下载",
+      "installGuide": "查看完整安装步骤",
+      "docsCta": "说明文档",
+      "ready": "已连接",
+      "imageAlt": "CoStrict IDE 插件在代码编辑器中的真实产品界面",
+      "contextChip": "已载入上下文",
+      "diffChip": "待审阅修改",
+      "files": "个文件"
+    },
+    "workflow": {
+      "title": "让 AI 融入开发过程，把任务做到可交付",
+      "subtitle": "在你可见、可控的编辑器环境里理解相关代码、完成修改并带回验证结果。",
+      "zones": {
+        "interaction": {
+          "label": "人机交互区",
+          "title": "选模式、选模型，发起任务",
+          "description": "用自然语言告诉 Coding Agent 你想做什么，持续补充要求，与 Agent 保持连续协作。"
+        },
+        "agent": {
+          "label": "Agent 工作区",
+          "title": "看进展、管执行，随时介入",
+          "description": "实时查看 Agent 的任务进展与执行状态，需要时随时补充要求、调整方向。"
+        },
+        "changes": {
+          "label": "代码变更区",
+          "title": "看代码、看变更，结果直接落地",
+          "description": "AI 生成的代码、文件变更与运行结果，直接呈现在当前工程中，随时查看、验证和调整。"
+        }
+      },
+      "demo": {
+        "videoLabel": "CoStrict IDE 中文任务演示",
+        "local": "本地工作区",
+        "taskLabel": "登录刷新异常",
+        "example": "真实任务示例",
+        "taskTitle": "修复并发请求重复刷新 Token",
+        "taskPrompt": "修复多个并发请求在 access token 过期时重复调用刷新接口的问题，确保刷新失败时清理登录状态，并补充回归测试。",
+        "relevantFiles": "相关文件",
+        "projectRule": "项目规则",
+        "expectedTests": "预期测试",
+        "videoPlaceholder": "示例视频待接入",
+        "videoSpec": "1719 × 1080 MP4 · 29 秒",
+        "play": "播放任务回放",
+        "pause": "暂停任务回放",
+        "seek": "拖动视频播放进度",
+        "fullscreen": "全屏观看视频",
+        "exitFullscreen": "退出全屏",
+        "selection": "当前选区",
+        "selectTitle": "问题就在代码旁边",
+        "selectDesc": "无需复制粘贴文件内容，当前选区和打开的项目就是任务起点。",
+        "prompt": "任务",
+        "promptText": "修复并发请求重复刷新 Token，并补充回归测试",
+        "context": "上下文",
+        "contextTitle": "只带入真正相关的内容",
+        "contextDesc": "CoStrict 关联当前文件、调用链和测试，减少遗漏，也避免无关信息干扰。",
+        "current": "当前",
+        "related": "关联",
+        "test": "测试",
+        "changes": "执行修改",
+        "changeTitle": "一次完成相关改动",
+        "changeDesc": "实现、调用方和测试一起更新，结果以文件级清单呈现。",
+        "review": "人工确认",
+        "reviewTitle": "先看结果，再决定应用",
+        "reviewDesc": "每一处差异和测试状态都保持可见，关键动作由你确认。",
+        "testsPassed": "相关测试已通过",
+        "filesChanged": "个文件已修改",
+        "reject": "继续调整",
+        "apply": "应用全部"
+      }
+    },
+    "codeReview": {
+      "title": "写代码的同时，让代码质量实时在线",
+      "description": "CoStrict 将专业代码审查能力直接融入 IDE。无论是刚写好的函数、当前文件，还是本次提交的多文件变更，都可以右键一键发起审查。Agent 会结合代码上下文进行分析，快速发现潜在问题，并给出专业、可执行的优化建议，让代码在提交之前，就完成一次专业检查。",
+      "videoLabel": "CoStrict IDE 中文代码审查演示"
+    },
+    "capabilities": {
+      "title": "模型不设限，能力自由扩展",
+      "model": {
+        "label": "模型生态",
+        "title": "主流模型厂商，按需选择",
+        "listLabel": "支持的主流模型厂商",
+        "enterpriseApi": "企业模型服务",
+        "apiTitle": "兼容第三方 API 和企业已有的模型服务",
+        "apiDescription": "支持接入第三方 API 与企业已有的模型服务，让开发者自由选择最适合自己的模型与服务。"
+      },
+      "agent": {
+        "label": "Agent 扩展",
+        "title": "能力组合，灵活适配",
+        "capabilityLabel": "扩展能力",
+        "modeLabel": "工作模式",
+        "description": "多种工具 x 多种工作模式，从代码开发，到原型设计，快速适配不同研发任务。"
+      }
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "常见问题",
+      "subtitle": "关于安装与使用 CoStrict IDE 插件的常见问题。",
+      "q1": "CoStrict IDE 插件支持哪些编辑器？",
+      "a1": "目前支持 Visual Studio Code 1.93.0 及以上版本，以及 JetBrains 2023.3 及以上系列 IDE，包括 IntelliJ IDEA、WebStorm、PyCharm、GoLand 等。",
+      "q2": "IDE 插件和 CLI 应该怎么选？",
+      "a2": "如果你希望边看代码边对话、审阅差异和应用修改，优先使用 IDE 插件；如果工作流主要在终端中，或需要更直接地执行命令和自动化任务，可以使用 CLI。",
+      "q3": "AI 会直接覆盖我的代码吗？",
+      "a3": "页面展示的核心路径会先把修改以文件和差异形式呈现，由你审阅并确认应用。对于重要项目，仍建议通过 Git 分支和现有代码审查流程保留完整恢复路径。",
+      "q4": "可以使用企业自己的模型和服务地址吗？",
+      "a4": "CoStrict 支持企业本地化部署场景。登录时使用管理员提供的服务地址；具体模型、权限和知识配置以企业部署方案为准。",
+      "q5": "插件可以理解整个项目吗？",
+      "a5": "插件会结合当前文件、选区和相关项目上下文完成任务。实际可访问的范围取决于工作区、企业权限和具体配置，建议始终审阅生成结果。",
+      "q6": "可以和 CoStrict Cloud 一起使用吗？",
+      "a6": "可以。IDE 插件与 CoStrict Cloud 可以通过共享的项目上下文协同工作，让你在编辑器和浏览器之间继续同一项研发任务。"
+    },
+    "finalCta": {
+      "eyebrow": "CoStrict插件",
+      "title": "留在编辑器里，把下一项研发任务做完",
+      "description": "让 AI 理解项目、完成修改，也把最终决定留给你。",
+      "primary": "安装 IDE 插件",
+      "secondary": "了解 CLI"
+    }
   }
 }

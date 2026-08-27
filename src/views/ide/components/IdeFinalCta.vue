@@ -4,39 +4,49 @@ import { useRouter } from 'vue-router'
 import ParticleField from '@/components/particle/ParticleField.vue'
 
 defineOptions({
-  name: 'CliFinalCta',
+  name: 'IdeFinalCta',
 })
 
 const { t } = useI18n()
 const router = useRouter()
 
-const toDownload = () => {
-  document.querySelector('.hero-install-command')?.scrollIntoView({
-    behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-    block: 'center',
-  })
-}
-
-const toIde = () => router.push({ name: 'IdeIndex' })
+const toCli = () => router.push({ name: 'CliIndex' })
 </script>
 
 <template>
-  <section class="cli-final-cta" aria-labelledby="cli-final-cta-title">
+  <section class="ide-final-cta" aria-labelledby="ide-final-title">
+    <div class="cta-texture cta-texture-left" aria-hidden="true">
+      <img
+        src="@/assets/home/redesign/hero-texture-left.webp"
+        alt=""
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+    <div class="cta-texture cta-texture-right" aria-hidden="true">
+      <img
+        src="@/assets/home/redesign/hero-texture-right.webp"
+        alt=""
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
     <div class="cta-particles" aria-hidden="true">
       <ParticleField variant="closing" :interactive="false" />
     </div>
-
     <div class="cta-inner" data-home-reveal="content">
       <div class="cta-content">
-        <h2 id="cli-final-cta-title">{{ t('cli.finalCta.title') }}</h2>
-        <p>{{ t('cli.finalCta.description') }}</p>
+        <h2 id="ide-final-title">{{ t('ide.finalCta.title') }}</h2>
+        <p>{{ t('ide.finalCta.description') }}</p>
         <div class="cta-actions">
-          <button class="cta-button cta-button-primary" type="button" @click="toDownload">
-            {{ t('cli.finalCta.primary') }}
-          </button>
-          <button class="cta-button cta-button-secondary" type="button" @click="toIde">
-            {{ t('cli.finalCta.secondary') }}
-            <span aria-hidden="true">→</span>
+          <RouterLink
+            class="cta-button cta-button-primary"
+            :to="{ name: 'download', query: { tab: 'vscode' } }"
+          >
+            {{ t('ide.finalCta.primary') }} <span aria-hidden="true">↓</span>
+          </RouterLink>
+          <button class="cta-button cta-button-secondary" type="button" @click="toCli">
+            {{ t('ide.finalCta.secondary') }} <span aria-hidden="true">→</span>
           </button>
         </div>
       </div>
@@ -45,24 +55,53 @@ const toIde = () => router.push({ name: 'IdeIndex' })
 </template>
 
 <style scoped lang="less">
-.cli-final-cta {
+.ide-final-cta {
   position: relative;
   display: flex;
-  min-height: 440px;
   align-items: center;
   justify-content: center;
-  overflow: visible;
+  min-height: 440px;
   box-sizing: border-box;
+  overflow: visible;
   background: #050505;
+}
+
+.cta-texture {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: brightness(0.74) saturate(0.62) contrast(1.04);
+    -webkit-mask-image: radial-gradient(ellipse 72% 68% at 50% 50%, #000 22%, transparent 74%);
+    mask-image: radial-gradient(ellipse 72% 68% at 50% 50%, #000 22%, transparent 74%);
+  }
+}
+
+.cta-texture-left {
+  top: 18%;
+  left: -160px;
+  width: 520px;
+  opacity: 0.08;
+}
+
+.cta-texture-right {
+  top: 14%;
+  right: -150px;
+  width: 500px;
+  opacity: 0.075;
 }
 
 .cta-particles {
   position: absolute;
   z-index: 1;
   inset: 0;
-  pointer-events: none;
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 66%, transparent 100%);
   mask-image: linear-gradient(to bottom, #000 0%, #000 66%, transparent 100%);
+  pointer-events: none;
 }
 
 .cta-inner {
@@ -109,7 +148,11 @@ const toIde = () => router.push({ name: 'IdeIndex' })
 }
 
 .cta-button {
+  display: inline-flex;
   height: 46px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
   padding: 0 22px;
   border: 0;
   border-radius: 10px;
@@ -117,6 +160,7 @@ const toIde = () => router.push({ name: 'IdeIndex' })
   font-size: 15px;
   font-weight: 500;
   line-height: 22px;
+  text-decoration: none;
   cursor: pointer;
   transition:
     border-color var(--motion-fast) ease,
@@ -161,7 +205,7 @@ const toIde = () => router.push({ name: 'IdeIndex' })
 }
 
 @media (max-width: 767px) {
-  .cli-final-cta {
+  .ide-final-cta {
     min-height: 480px;
     padding: 0 24px;
   }
@@ -179,6 +223,16 @@ const toIde = () => router.push({ name: 'IdeIndex' })
   .cta-actions {
     flex-direction: column;
     align-items: center;
+  }
+
+  .cta-texture-left {
+    left: -140px;
+    width: 300px;
+  }
+
+  .cta-texture-right {
+    right: -130px;
+    width: 280px;
   }
 }
 
