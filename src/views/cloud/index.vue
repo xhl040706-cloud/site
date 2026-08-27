@@ -162,7 +162,7 @@
       </div>
     </section>
 
-    <!-- 第四屏：FAQ / 快速排查，与前屏等宽 -->
+    <!-- 第四屏：FAQ，与前屏等宽 -->
     <section
       class="relative z-[1] flex w-full justify-center px-8 pt-0 pb-24 max-md:px-5 max-md:pb-10"
     >
@@ -170,6 +170,10 @@
         <CloudFAQ />
       </div>
     </section>
+
+    <div class="relative z-[1]">
+      <HomeFooter always-visible />
+    </div>
   </div>
 </template>
 
@@ -197,6 +201,7 @@ import TeamAssetsIconImage from '@/assets/section2/team-assets-icon.webp'
 import WorkspaceFolderIconImage from '@/assets/section2/workspace-folder-icon.webp'
 import WorkspaceListEnImage from '@/assets/section2/workspace-list-en.webp'
 import WorkspaceListZhImage from '@/assets/section2/workspace-list-zh.webp'
+import HomeFooter from '@/views/home/components/HomeFooter.vue'
 import CloudFAQ from './components/CloudFAQ.vue'
 
 interface CloudFeatureItem {

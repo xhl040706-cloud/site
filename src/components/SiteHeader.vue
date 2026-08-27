@@ -24,12 +24,10 @@
       <div class="main-nav-inner">
         <button
           class="brand-anchor"
-          :class="{ 'is-morphing': scrollProgress > 0 && !isHomeRoute }"
           type="button"
           @click="toHome"
         >
-          <img src="@/assets/logo.webp" alt="" />
-          <span>CoStrict</span>
+          <img src="@/assets/home/redesign/navbar-logo.svg" alt="CoStrict" />
         </button>
 
         <nav
@@ -466,7 +464,6 @@ onBeforeUnmount(() => {
 .brand-anchor {
   display: flex;
   align-items: center;
-  gap: 10px;
   height: 60px;
   padding: 0;
   border: 0;
@@ -480,21 +477,12 @@ onBeforeUnmount(() => {
   cursor: pointer;
   opacity: var(--brand-opacity);
   transition:
-    top 420ms cubic-bezier(0.22, 1, 0.36, 1),
-    height 420ms cubic-bezier(0.22, 1, 0.36, 1),
     opacity 200ms ease;
 
-  &.is-morphing {
-    position: fixed;
-    z-index: var(--z-navbar);
-    top: var(--nav-top);
-    left: max(32px, calc((100vw - var(--home-content-max-width)) / 2));
-    height: var(--nav-height);
-  }
-
   img {
-    width: 28px;
-    height: 28px;
+    display: block;
+    width: 112px;
+    height: 25px;
   }
 }
 
@@ -864,12 +852,6 @@ onBeforeUnmount(() => {
 
   .main-nav-inner {
     width: calc(100% - 48px);
-  }
-
-  .brand-anchor {
-    span {
-      display: none;
-    }
   }
 
   .actions-anchor {
