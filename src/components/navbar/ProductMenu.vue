@@ -105,7 +105,12 @@ const currentProductKey = computed(() => {
   return typeof productKey === 'string' ? productKey : ''
 })
 const isProductActive = computed(() => {
-  return currentRouteName.value === 'cloud' || ['cli', 'ide'].includes(currentProductKey.value)
+  return (
+    currentRouteName.value === 'cloud' ||
+    currentRouteName.value === 'CliIndex' ||
+    currentRouteName.value === 'IdeIndex' ||
+    ['cli', 'ide'].includes(currentProductKey.value)
+  )
 })
 let closeTimer: ReturnType<typeof setTimeout> | undefined
 
@@ -123,14 +128,14 @@ const items = computed<ProductItem[]>(() => [
     iconKey: 'cli',
     title: t('productMenu.cliTitle'),
     desc: t('productMenu.cliDesc'),
-    route: { name: 'download', query: { product: 'cli', tab: 'cli' } },
+    route: { name: 'CliIndex' },
   },
   {
     key: 'ide',
     iconKey: 'ide',
     title: t('productMenu.ideTitle'),
     desc: t('productMenu.ideDesc'),
-    route: { name: 'download', query: { product: 'ide', tab: 'vscode' } },
+    route: { name: 'IdeIndex' },
   },
 ])
 
@@ -160,10 +165,7 @@ const onSelect = (item: ProductItem, event: MouseEvent) => {
 }
 
 const isItemActive = (item: ProductItem) => {
-  if (item.key === 'cloud') {
-    return currentRouteName.value === item.route.name
-  }
-  return currentRouteName.value === 'download' && currentProductKey.value === item.key
+  return currentRouteName.value === item.route.name
 }
 
 onBeforeUnmount(() => {

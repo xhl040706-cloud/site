@@ -6,6 +6,8 @@ import { scrollBehavior } from './scrollBehavior'
 // 创建可预取的路由加载器
 const homeRoute = createPrefetchableRoute(() => import('@/views/home/index.vue'))
 const cloudRoute = createPrefetchableRoute(() => import('@/views/cloud/index.vue'))
+const cliRoute = createPrefetchableRoute(() => import('@/views/cli/index.vue'))
+const ideRoute = createPrefetchableRoute(() => import('@/views/ide/index.vue'))
 const downloadRoute = createPrefetchableRoute(() => import('@/views/download/index.vue'))
 const pricingRoute = createPrefetchableRoute(() => import('@/views/pricing/PricingPage.vue'))
 const operationRoute = createPrefetchableRoute(() => import('@/views/operation/OperationPage.vue'))
@@ -33,6 +35,16 @@ export const routes = [
     path: '/cloud',
     name: 'cloud',
     component: cloudRoute.load,
+  },
+  {
+    path: '/cli',
+    name: 'CliIndex',
+    component: cliRoute.load,
+  },
+  {
+    path: '/ide',
+    name: 'IdeIndex',
+    component: ideRoute.load,
   },
   {
     path: '/download',

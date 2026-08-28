@@ -265,6 +265,8 @@ const isProductNavigationActive = computed(() => {
   const productKey = route.query.product
   return (
     route.name === 'cloud' ||
+    route.name === 'CliIndex' ||
+    route.name === 'IdeIndex' ||
     (route.name === 'download' && ['cli', 'ide'].includes(productKey as string))
   )
 })
@@ -279,13 +281,13 @@ const productNavigationItems = computed<ProductNavigationItem[]>(() => [
     key: 'cli',
     title: t('productMenu.cliTitle'),
     description: t('productMenu.cliDesc'),
-    route: { name: 'download', query: { product: 'cli', tab: 'cli' } },
+    route: { name: 'CliIndex' },
   },
   {
     key: 'ide',
     title: t('productMenu.ideTitle'),
     description: t('productMenu.ideDesc'),
-    route: { name: 'download', query: { product: 'ide', tab: 'vscode' } },
+    route: { name: 'IdeIndex' },
   },
 ])
 
@@ -325,7 +327,8 @@ const navigateMobileProduct = (route: RouteLocationRaw) => {
 const isProductItemActive = (key: ProductNavigationItem['key']) => {
   const route = router.currentRoute.value
   if (key === 'cloud') return route.name === 'cloud'
-  return route.name === 'download' && route.query.product === key
+  if (key === 'cli') return route.name === 'CliIndex'
+  return route.name === 'IdeIndex'
 }
 
 const updateScrollState = () => {

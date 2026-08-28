@@ -120,10 +120,10 @@ const scrollToTop = () => {
 const navigate = (key: string) => {
   if (key === 'cloud') return openExternal('https://zgsm.sangfor.com/')
   if (key === 'cli') {
-    return void router.push({ name: 'download', query: { product: 'cli', tab: 'cli' } })
+    return void router.push({ name: 'CliIndex' })
   }
   if (key === 'ide') {
-    return void router.push({ name: 'download', query: { product: 'ide', tab: 'vscode' } })
+    return void router.push({ name: 'IdeIndex' })
   }
   if (key === 'blog' || key === 'pricing') {
     return void router.push({ name: key })
