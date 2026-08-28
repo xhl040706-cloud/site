@@ -8,6 +8,7 @@ import DownloadContent from './components/DownloadContent.vue'
 import { useDownloadData } from './useDownloadData'
 import { useDownloadActions } from './useDownloadActions'
 import { useDetectPlatform } from './useDetectPlatform'
+import { VISIBLE_DOWNLOAD_TABS } from './constants'
 import type { TabType, InstallMethod, Platform } from './types'
 
 defineOptions({
@@ -44,7 +45,7 @@ const router = useRouter()
 const activeTab = ref<TabType>('vscode')
 const installMethod = ref<InstallMethod>('bash')
 const activePlatform = ref<Platform>('macos')
-const downloadTabs: TabType[] = ['vscode', 'jetbrains', 'cli']
+const DEFAULT_DOWNLOAD_TAB: TabType = 'vscode'
 
 const { detectedPlatform } = useDetectPlatform()
 watch(detectedPlatform, (val) => {
@@ -55,8 +56,21 @@ watch(
   () => route.query.tab,
   (tab) => {
     const nextTab = Array.isArray(tab) ? tab[0] : tab
-    if (nextTab && downloadTabs.includes(nextTab as TabType)) {
+    if (nextTab && VISIBLE_DOWNLOAD_TABS.includes(nextTab as TabType)) {
       activeTab.value = nextTab as TabType
+      return
+    }
+
+    activeTab.value = DEFAULT_DOWNLOAD_TAB
+    if (nextTab) {
+      router.replace({
+        name: 'download',
+        query: {
+          ...route.query,
+          tab: DEFAULT_DOWNLOAD_TAB,
+          product: undefined,
+        },
+      })
     }
   },
   { immediate: true },

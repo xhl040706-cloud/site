@@ -1,4 +1,4 @@
-import type { TabConfig } from './types'
+import type { TabConfig, TabType } from './types'
 
 export const CLI_COMMAND_INSTALL_NPM =
   'npm install -g @costrict/csc --registry=https://registry.npmjs.org/'
@@ -6,6 +6,8 @@ export const CLI_COMMAND_INSTALL_BASH = 'curl -fsSL https://costrict.ai/install.
 export const CLI_COMMAND_INSTALL_POWERSHELL =
   'iwr https://costrict.ai/install.bat -Out install.bat;.\\install.bat'
 export const CLI_VERIFY_COMMAND = 'cs --version'
+
+export const VISIBLE_DOWNLOAD_TABS: readonly TabType[] = ['vscode', 'jetbrains']
 
 export const TAB_CONFIGS: TabConfig[] = [
   { key: 'vscode', icon: 'vscode', titleKey: 'download.vscodeTitle' },

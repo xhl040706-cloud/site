@@ -177,9 +177,14 @@ const handleDownloadPointerLeave = (event: PointerEvent) => {
 
 const selectDownload = (key: 'cli' | 'ide') => {
   closeDownloadMenu()
+  if (key === 'cli') {
+    router.push({ name: 'CliIndex' })
+    return
+  }
+
   router.push({
     name: 'download',
-    query: key === 'cli' ? { product: 'cli', tab: 'cli' } : { product: 'ide', tab: 'vscode' },
+    query: { product: 'ide', tab: 'vscode' },
   })
 }
 
