@@ -13,6 +13,7 @@ import {
   CLI_COMMAND_INSTALL_NPM,
   CLI_COMMAND_INSTALL_BASH,
   CLI_COMMAND_INSTALL_POWERSHELL,
+  VISIBLE_DOWNLOAD_TABS,
 } from './constants'
 
 // 导入图片资源
@@ -58,20 +59,22 @@ export function useDownloadData(
     },
   }
 
-  const tabList = computed(() => [
-    {
-      key: 'vscode' as const,
-      imgUrl: activeTab.value === 'vscode' ? vscodeImg : vscodeDisableImg,
-    },
-    {
-      key: 'jetbrains' as const,
-      imgUrl: activeTab.value === 'jetbrains' ? jetbrainsImg : jetbrainsDisableImg,
-    },
-    {
-      key: 'cli' as const,
-      imgUrl: activeTab.value === 'cli' ? cliImg : cliDisableImg,
-    },
-  ])
+  const tabList = computed(() =>
+    [
+      {
+        key: 'vscode' as const,
+        imgUrl: activeTab.value === 'vscode' ? vscodeImg : vscodeDisableImg,
+      },
+      {
+        key: 'jetbrains' as const,
+        imgUrl: activeTab.value === 'jetbrains' ? jetbrainsImg : jetbrainsDisableImg,
+      },
+      {
+        key: 'cli' as const,
+        imgUrl: activeTab.value === 'cli' ? cliImg : cliDisableImg,
+      },
+    ].filter((tab) => VISIBLE_DOWNLOAD_TABS.includes(tab.key)),
+  )
 
   const headerTitle = computed(() => {
     const titles: Record<TabType, string> = {
