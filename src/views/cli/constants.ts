@@ -1,7 +1,7 @@
 import type { StoryStage } from './types'
 
 export const CLI_DOCS_URL = 'https://docs.costrict.ai'
-export const CLI_DOCS_INSTALL_URL = `${CLI_DOCS_URL}/cli/guide/installation`
+export const CLI_DOCS_INSTALL_URL = `${CLI_DOCS_URL}/csc/quickstart`
 
 export const CLI_VERIFY_COMMAND = 'cs --version'
 export const CLI_START_COMMAND = 'csc'

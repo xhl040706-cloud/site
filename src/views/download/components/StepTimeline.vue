@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { NTimeline, NTimelineItem, useMessage } from 'naive-ui'
 import type { StepItem } from '../types'
@@ -26,7 +26,10 @@ defineEmits<{
   (e: 'installMethodChange', method: InstallMethod): void
 }>()
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
+const cliDocsUrl = computed(
+  () => `https://docs.costrict.ai${locale.value === 'en' ? '/en' : ''}/csc/quickstart`,
+)
 const message = useMessage()
 const copiedIndex = ref<number | null>(null)
 
@@ -267,7 +270,7 @@ const handleCopyCommand = async (cmd: string, index: number) => {
         >
           <p class="cli-install-desc">
             {{ $t('download.cliStep2SubContent', { link: '' })
-            }}<a href="https://docs.costrict.ai/cli/guide/installation" target="_blank">{{
+            }}<a :href="cliDocsUrl" target="_blank">{{
               $t('download.cliStep2DocLink')
             }}</a>
           </p>
