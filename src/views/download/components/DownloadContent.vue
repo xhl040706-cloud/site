@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type {
   TabType,
@@ -36,7 +37,10 @@ const emit = defineEmits<{
   (e: 'platformChange', platform: Platform): void
 }>()
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
+const cliDocsUrl = computed(
+  () => `https://docs.costrict.ai${locale.value === 'en' ? '/en' : ''}/csc/quickstart`,
+)
 
 const handleDownload = () => emit('download')
 const handlePlatformChange = (platform: Platform) => {
@@ -87,7 +91,7 @@ const handleCopyCommand = (command: string) => {
       <div class="cli-install-section">
         <p class="cli-desc">
           {{ $t('download.cliStep2SubContent', { link: '' })
-          }}<a href="https://docs.costrict.ai/cli/guide/installation" target="_blank">{{
+          }}<a :href="cliDocsUrl" target="_blank">{{
             $t('download.cliStep2DocLink')
           }}</a>
         </p>

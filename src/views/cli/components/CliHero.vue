@@ -68,7 +68,7 @@ let initialOutputTimer: ReturnType<typeof window.setTimeout> | undefined
 let streamTimer: ReturnType<typeof window.setTimeout> | undefined
 
 const docsUrl = computed(
-  () => `${CLI_DOCS_URL}${locale.value === 'en' ? '/en' : ''}/cli/guide/installation`,
+  () => `${CLI_DOCS_URL}${locale.value === 'en' ? '/en' : ''}/csc/quickstart`,
 )
 const currentStreamTask = computed(() => STREAM_TASKS[streamTaskIndex.value] ?? PRIMARY_STREAM_TASK)
 const streamHasStaticPrompt = computed(() => streamTaskIndex.value === 0)
